@@ -12,11 +12,11 @@ const profileData: Profile = {
     },
     {
       title: "GitHub",
-      url: "https://github.com/yourusername"
+      url: "https://github.com/myselfabhi"
     },
     {
       title: "Twitter",
-      url: "https://twitter.com/yourhandle"
+      url: "https://twitter.com/_myselfabhi"
     },
     {
       title: "LinkedIn",
