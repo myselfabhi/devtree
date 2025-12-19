@@ -51,7 +51,7 @@ export const createProfile = async (
 			});
 		}
 
-		const { username, displayName, bio, avatar } = req.body;
+		const { username, displayName, bio, avatar, font } = req.body;
 
 		// Validation
 		if (!username || !displayName) {
@@ -97,6 +97,7 @@ export const createProfile = async (
 			displayName: displayName.trim(),
 			bio: bio?.trim(),
 			avatar,
+			font: font?.trim() || undefined,
 		});
 
 		await profile.save();

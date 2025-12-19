@@ -16,7 +16,24 @@ const profileSchema = z.object({
 		.regex(/^[a-z0-9_-]+$/, "Username can only contain lowercase letters, numbers, hyphens, and underscores"),
 	displayName: z.string().min(2, "Display name must be at least 2 characters"),
 	bio: z.string().optional(),
+	font: z.string().optional(),
 });
+
+// Popular Google Fonts for link pages
+const GOOGLE_FONTS = [
+	{ value: "", label: "Default (System)" },
+	{ value: "Inter", label: "Inter" },
+	{ value: "Roboto", label: "Roboto" },
+	{ value: "Open Sans", label: "Open Sans" },
+	{ value: "Lato", label: "Lato" },
+	{ value: "Montserrat", label: "Montserrat" },
+	{ value: "Poppins", label: "Poppins" },
+	{ value: "Raleway", label: "Raleway" },
+	{ value: "Playfair Display", label: "Playfair Display" },
+	{ value: "Merriweather", label: "Merriweather" },
+	{ value: "Source Sans Pro", label: "Source Sans Pro" },
+	{ value: "Nunito", label: "Nunito" },
+];
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
@@ -68,6 +85,7 @@ export default function ProfilePage() {
 				setValue("username", response.data.profile.username);
 				setValue("displayName", response.data.profile.displayName);
 				setValue("bio", response.data.profile.bio || "");
+				setValue("font", response.data.profile.font || "");
 			}
 		} catch (err: any) {
 			if (err.message.includes("not found")) {
@@ -208,6 +226,25 @@ export default function ProfilePage() {
 									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
 									placeholder="Tell us about yourself..."
 								/>
+							</div>
+
+							<div>
+								<label htmlFor="font" className="block text-sm font-medium text-gray-700">
+									Font (Optional)
+								</label>
+								<select
+									{...register("font")}
+									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+								>
+									{GOOGLE_FONTS.map((font) => (
+										<option key={font.value} value={font.value}>
+											{font.label}
+										</option>
+									))}
+								</select>
+								<p className="mt-1 text-xs text-gray-500">
+									Choose a font for your public profile page
+								</p>
 							</div>
 
 							<div className="flex justify-end space-x-3">

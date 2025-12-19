@@ -5,6 +5,23 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { profileApi, linkApi } from "@/lib/api";
 
+// Helper function to load Google Font
+function loadGoogleFont(fontName: string) {
+	if (!fontName) return;
+	
+	const fontFamily = fontName.replace(/\s+/g, "+");
+	const linkId = `google-font-${fontFamily}`;
+	
+	// Check if font is already loaded
+	if (document.getElementById(linkId)) return;
+	
+	const link = document.createElement("link");
+	link.id = linkId;
+	link.rel = "stylesheet";
+	link.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
+	document.head.appendChild(link);
+}
+
 interface Profile {
 	id: string;
 	username: string;
@@ -48,7 +65,13 @@ export default function PublicProfilePage() {
 			]);
 
 			if (profileRes.success) {
-				setProfile(profileRes.data.profile);
+				const profileData = profileRes.data.profile;
+				setProfile(profileData);
+				
+				// Load Google Font if specified
+				if (profileData.font) {
+					loadGoogleFont(profileData.font);
+				}
 			}
 
 			if (linksRes.success) {
@@ -97,6 +120,9 @@ export default function PublicProfilePage() {
 	const textColor = (profile.colors as any)?.text || "#000000";
 	const buttonColor = (profile.colors as any)?.button || "#3b82f6";
 	const buttonHoverColor = (profile.colors as any)?.buttonHover || "#2563eb";
+	
+	// Get font from profile (with default)
+	const fontFamily = profile.font ? `"${profile.font}", sans-serif` : "inherit";
 
 	return (
 		<div
@@ -108,6 +134,7 @@ export default function PublicProfilePage() {
 					: undefined,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
+				fontFamily: fontFamily,
 			}}
 		>
 			<div className="w-full max-w-md">
