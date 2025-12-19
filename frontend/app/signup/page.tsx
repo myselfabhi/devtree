@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const signupSchema = z.object({
 	name: z.string().min(2, "Name must be at least 2 characters"),
@@ -68,90 +69,236 @@ export default function SignupPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-			<div className="max-w-md w-full space-y-8">
-				<div>
-					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			className="min-h-screen flex items-center justify-center px-4"
+			style={{
+				background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%)",
+			}}
+		>
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5 }}
+				className="max-w-md w-full space-y-8"
+			>
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.2 }}
+				>
+					<motion.h2
+						initial={{ scale: 0.9 }}
+						animate={{ scale: 1 }}
+						transition={{ type: "spring", stiffness: 200 }}
+						className="mt-6 text-center text-3xl font-extrabold"
+						style={{ color: "var(--text-primary)" }}
+					>
 						Create your account
-					</h2>
-					<p className="mt-2 text-center text-sm text-gray-600">
+					</motion.h2>
+					<p className="mt-2 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
 						Or{" "}
-						<Link
-							href="/login"
-							className="font-medium text-blue-600 hover:text-blue-500"
-						>
-							sign in to existing account
-						</Link>
+						<motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+							<Link
+								href="/login"
+								className="font-medium transition-colors"
+								style={{ color: "var(--accent-primary)" }}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.color = "var(--accent-hover)";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.color = "var(--accent-primary)";
+								}}
+							>
+								sign in to existing account
+							</Link>
+						</motion.span>
 					</p>
-				</div>
-				<form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-					{error && (
-						<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-							{error}
-						</div>
-					)}
-					<div className="rounded-md shadow-sm space-y-4">
+				</motion.div>
+				<motion.form
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.3 }}
+					className="mt-8 space-y-6"
+					onSubmit={handleSubmit(onSubmit)}
+				>
+					<AnimatePresence>
+						{error && (
+							<motion.div
+								initial={{ opacity: 0, x: -20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: 20 }}
+								className="px-4 py-3 rounded border"
+								style={{
+									backgroundColor: "rgba(239, 68, 68, 0.1)",
+									borderColor: "var(--error)",
+									color: "var(--error)",
+								}}
+							>
+								{error}
+							</motion.div>
+						)}
+					</AnimatePresence>
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.4 }}
+						className="rounded-md shadow-lg space-y-4 p-6 rounded-lg"
+						style={{
+							backgroundColor: "var(--bg-card)",
+							border: "1px solid var(--border-color)",
+						}}
+					>
 						<div>
 							<label htmlFor="name" className="sr-only">
 								Name
 							</label>
-							<input
+							<motion.input
+								whileFocus={{ scale: 1.02 }}
 								{...register("name")}
 								type="text"
 								autoComplete="name"
-								className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+								className="appearance-none relative block w-full px-3 py-2 border rounded-md focus:outline-none focus:z-10 sm:text-sm transition-colors"
+								style={{
+									borderColor: "var(--border-color)",
+									backgroundColor: "var(--bg-secondary)",
+									color: "var(--text-primary)",
+								}}
+								onFocus={(e) => {
+									e.currentTarget.style.borderColor = "var(--accent-primary)";
+								}}
+								onBlur={(e) => {
+									e.currentTarget.style.borderColor = "var(--border-color)";
+								}}
 								placeholder="Full name"
 							/>
-							{errors.name && (
-								<p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-							)}
+							<AnimatePresence>
+								{errors.name && (
+									<motion.p
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: "auto" }}
+										exit={{ opacity: 0, height: 0 }}
+										className="mt-1 text-sm text-red-600"
+									>
+										{errors.name.message}
+									</motion.p>
+								)}
+							</AnimatePresence>
 						</div>
 						<div>
 							<label htmlFor="email" className="sr-only">
 								Email address
 							</label>
-							<input
+							<motion.input
+								whileFocus={{ scale: 1.02 }}
 								{...register("email")}
 								type="email"
 								autoComplete="email"
-								className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+								className="appearance-none relative block w-full px-3 py-2 border rounded-md focus:outline-none focus:z-10 sm:text-sm transition-colors"
+								style={{
+									borderColor: "var(--border-color)",
+									backgroundColor: "var(--bg-secondary)",
+									color: "var(--text-primary)",
+								}}
+								onFocus={(e) => {
+									e.currentTarget.style.borderColor = "var(--accent-primary)";
+								}}
+								onBlur={(e) => {
+									e.currentTarget.style.borderColor = "var(--border-color)";
+								}}
 								placeholder="Email address"
 							/>
-							{errors.email && (
-								<p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-							)}
+							<AnimatePresence>
+								{errors.email && (
+									<motion.p
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: "auto" }}
+										exit={{ opacity: 0, height: 0 }}
+										className="mt-1 text-sm text-red-600"
+									>
+										{errors.email.message}
+									</motion.p>
+								)}
+							</AnimatePresence>
 						</div>
 						<div>
 							<label htmlFor="password" className="sr-only">
 								Password
 							</label>
-							<input
+							<motion.input
+								whileFocus={{ scale: 1.02 }}
 								{...register("password")}
 								type="password"
 								autoComplete="new-password"
-								className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+								className="appearance-none relative block w-full px-3 py-2 border rounded-md focus:outline-none focus:z-10 sm:text-sm transition-colors"
+								style={{
+									borderColor: "var(--border-color)",
+									backgroundColor: "var(--bg-secondary)",
+									color: "var(--text-primary)",
+								}}
+								onFocus={(e) => {
+									e.currentTarget.style.borderColor = "var(--accent-primary)";
+								}}
+								onBlur={(e) => {
+									e.currentTarget.style.borderColor = "var(--border-color)";
+								}}
 								placeholder="Password (min 8 characters)"
 							/>
-							{errors.password && (
-								<p className="mt-1 text-sm text-red-600">
-									{errors.password.message}
-								</p>
-							)}
+							<AnimatePresence>
+								{errors.password && (
+									<motion.p
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: "auto" }}
+										exit={{ opacity: 0, height: 0 }}
+										className="mt-1 text-sm text-red-600"
+									>
+										{errors.password.message}
+									</motion.p>
+								)}
+							</AnimatePresence>
 						</div>
-					</div>
+					</motion.div>
 
-					<div>
-						<button
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.5 }}
+					>
+						<motion.button
+							whileHover={{ scale: 1.02 }}
+							whileTap={{ scale: 0.98 }}
 							type="submit"
 							disabled={isLoading}
-							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+							style={{
+								backgroundColor: "var(--accent-primary)",
+								color: "var(--text-primary)",
+							}}
+							onMouseEnter={(e) => {
+								if (!isLoading) {
+									e.currentTarget.style.backgroundColor = "var(--accent-hover)";
+								}
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.backgroundColor = "var(--accent-primary)";
+							}}
 						>
-							{isLoading ? "Creating account..." : "Sign up"}
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
+							{isLoading ? (
+								<motion.span
+									animate={{ rotate: 360 }}
+									transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+									className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+								/>
+							) : (
+								"Sign up"
+							)}
+						</motion.button>
+					</motion.div>
+				</motion.form>
+			</motion.div>
+		</motion.div>
 	);
 }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { profileApi, linkApi } from "@/lib/api";
 
 // Helper function to load Google Font
@@ -99,7 +100,19 @@ export default function PublicProfilePage() {
 	if (isLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-gray-50">
-				<div className="text-lg">Loading...</div>
+				<motion.div
+					initial={{ opacity: 0, scale: 0.8 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.3 }}
+					className="text-lg"
+				>
+					<motion.div
+						animate={{ rotate: 360 }}
+						transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+						className="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full mr-3"
+					/>
+					Loading...
+				</motion.div>
 			</div>
 		);
 	}
@@ -124,8 +137,49 @@ export default function PublicProfilePage() {
 	// Get font from profile (with default)
 	const fontFamily = profile.font ? `"${profile.font}", sans-serif` : "inherit";
 
+	const containerVariants = {
+		hidden: { opacity: 0 },
+		visible: {
+			opacity: 1,
+			transition: {
+				staggerChildren: 0.1,
+				delayChildren: 0.2,
+			},
+		},
+	};
+
+	const itemVariants = {
+		hidden: { opacity: 0, y: 20 },
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				type: "spring",
+				stiffness: 100,
+				damping: 12,
+			},
+		},
+	};
+
+	const avatarVariants = {
+		hidden: { scale: 0, opacity: 0 },
+		visible: {
+			scale: 1,
+			opacity: 1,
+			transition: {
+				type: "spring",
+				stiffness: 200,
+				damping: 15,
+			},
+		},
+	};
+
 	return (
-		<div
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ duration: 0.3 }}
 			className="min-h-screen flex items-center justify-center px-4 py-8"
 			style={{
 				backgroundColor: bgColor,
@@ -139,73 +193,136 @@ export default function PublicProfilePage() {
 		>
 			<div className="w-full max-w-md">
 				{/* Profile Header */}
-				<div className="text-center mb-8">
+				<motion.div
+					variants={itemVariants}
+					initial="hidden"
+					animate="visible"
+					className="text-center mb-8"
+				>
 					{profile.avatar && (
-						<div className="mb-4 flex justify-center">
-							<Image
-								src={profile.avatar}
-								alt={profile.displayName}
-								width={120}
-								height={120}
-								className="rounded-full border-4 border-white shadow-lg"
-							/>
-						</div>
+						<motion.div
+							variants={avatarVariants}
+							initial="hidden"
+							animate="visible"
+							className="mb-4 flex justify-center"
+						>
+							<motion.div
+								whileHover={{ scale: 1.1, rotate: 5 }}
+								whileTap={{ scale: 0.95 }}
+								transition={{ type: "spring", stiffness: 300 }}
+							>
+								<Image
+									src={profile.avatar}
+									alt={profile.displayName}
+									width={120}
+									height={120}
+									className="rounded-full border-4 border-white shadow-lg"
+								/>
+							</motion.div>
+						</motion.div>
 					)}
 
-					<h1
+					<motion.h1
+						variants={itemVariants}
+						initial="hidden"
+						animate="visible"
 						className="text-3xl font-bold mb-2"
 						style={{ color: textColor }}
 					>
 						{profile.displayName}
-					</h1>
+					</motion.h1>
 
 					{profile.bio && (
-						<p className="text-lg mb-4" style={{ color: textColor, opacity: 0.8 }}>
+						<motion.p
+							variants={itemVariants}
+							initial="hidden"
+							animate="visible"
+							className="text-lg mb-4"
+							style={{ color: textColor, opacity: 0.8 }}
+						>
 							{profile.bio}
-						</p>
+						</motion.p>
 					)}
-				</div>
+				</motion.div>
 
 				{/* Links */}
-				<div className="space-y-3">
-					{links.map((link) => (
-						<button
-							key={link._id}
-							onClick={() => handleLinkClick(link._id, link.url)}
-							className="w-full p-4 rounded-lg text-center font-medium transition-all hover:scale-105 shadow-md"
-							style={{
-								backgroundColor: buttonColor,
-								color: "#ffffff",
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.backgroundColor = buttonHoverColor;
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.backgroundColor = buttonColor;
-							}}
-						>
-							{link.icon && (
-								<img
-									src={link.icon}
-									alt=""
-									className="inline-block w-5 h-5 mr-2 align-middle"
-								/>
-							)}
-							<span>{link.title}</span>
-							{link.description && (
-								<p className="text-sm mt-1 opacity-90">{link.description}</p>
-							)}
-						</button>
-					))}
-				</div>
+				<motion.div
+					variants={containerVariants}
+					initial="hidden"
+					animate="visible"
+					className="space-y-3"
+				>
+					<AnimatePresence>
+						{links.map((link, index) => (
+							<motion.button
+								key={link._id}
+								variants={itemVariants}
+								initial="hidden"
+								animate="visible"
+								exit={{ opacity: 0, scale: 0.8 }}
+								whileHover={{
+									scale: 1.05,
+									y: -5,
+									transition: { type: "spring", stiffness: 400, damping: 17 },
+								}}
+								whileTap={{ scale: 0.95 }}
+								onClick={() => handleLinkClick(link._id, link.url)}
+								className="w-full p-4 rounded-lg text-center font-medium shadow-md relative overflow-hidden"
+								style={{
+									backgroundColor: buttonColor,
+									color: "#ffffff",
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.backgroundColor = buttonHoverColor;
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.backgroundColor = buttonColor;
+								}}
+							>
+								<motion.div
+									initial={{ x: -100, opacity: 0 }}
+									animate={{ x: 0, opacity: 1 }}
+									transition={{ delay: index * 0.1 + 0.3 }}
+									className="flex items-center justify-center"
+								>
+									{link.icon && (
+										<motion.img
+											src={link.icon}
+											alt=""
+											className="inline-block w-5 h-5 mr-2 align-middle"
+											whileHover={{ rotate: 360 }}
+											transition={{ duration: 0.5 }}
+										/>
+									)}
+									<span>{link.title}</span>
+								</motion.div>
+								{link.description && (
+									<motion.p
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										transition={{ delay: index * 0.1 + 0.5 }}
+										className="text-sm mt-1 opacity-90"
+									>
+										{link.description}
+									</motion.p>
+								)}
+							</motion.button>
+						))}
+					</AnimatePresence>
+				</motion.div>
 
 				{links.length === 0 && (
-					<div className="text-center mt-8" style={{ color: textColor, opacity: 0.6 }}>
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						className="text-center mt-8"
+						style={{ color: textColor, opacity: 0.6 }}
+					>
 						<p>No links available yet.</p>
-					</div>
+					</motion.div>
 				)}
 			</div>
-		</div>
+		</motion.div>
 	);
 }
 

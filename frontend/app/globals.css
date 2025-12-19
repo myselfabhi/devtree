@@ -1,26 +1,141 @@
 @import "tailwindcss";
 
+/* Modern Dark Theme Color Palettes */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Default: Purple & Dark Gray (Modern, Trendy) */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #141420;
+  --bg-tertiary: #1a1a2e;
+  --bg-card: #1f1f35;
+  --bg-hover: #252542;
+  
+  --text-primary: #f8f9fa;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  
+  --accent-primary: #8b5cf6;
+  --accent-hover: #a78bfa;
+  --accent-light: #c4b5fd;
+  
+  --border-color: #2d2d44;
+  --border-hover: #3d3d5c;
+  
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-lg: rgba(0, 0, 0, 0.5);
+}
+
+/* Alternative Palette 1: Emerald & Charcoal */
+[data-theme="emerald"] {
+  --bg-primary: #0a0f0a;
+  --bg-secondary: #141914;
+  --bg-tertiary: #1a2e1a;
+  --bg-card: #1f351f;
+  --bg-hover: #254225;
+  
+  --accent-primary: #10b981;
+  --accent-hover: #34d399;
+  --accent-light: #6ee7b7;
+  
+  --border-color: #2d442d;
+  --border-hover: #3d5c3d;
+}
+
+/* Alternative Palette 2: Rose & Slate */
+[data-theme="rose"] {
+  --bg-primary: #0f0a0a;
+  --bg-secondary: #191414;
+  --bg-tertiary: #2e1a1a;
+  --bg-card: #351f1f;
+  --bg-hover: #422525;
+  
+  --accent-primary: #f43f5e;
+  --accent-hover: #fb7185;
+  --accent-light: #fda4af;
+  
+  --border-color: #442d2d;
+  --border-hover: #5c3d3d;
+}
+
+/* Alternative Palette 3: Cyan & Deep Black */
+[data-theme="cyan"] {
+  --bg-primary: #0a0f0f;
+  --bg-secondary: #141919;
+  --bg-tertiary: #1a2e2e;
+  --bg-card: #1f3535;
+  --bg-hover: #254242;
+  
+  --accent-primary: #06b6d4;
+  --accent-hover: #22d3ee;
+  --accent-light: #67e8f9;
+  
+  --border-color: #2d4444;
+  --border-hover: #3d5c5c;
+}
+
+/* Alternative Palette 4: Amber & Dark */
+[data-theme="amber"] {
+  --bg-primary: #0f0a0a;
+  --bg-secondary: #191414;
+  --bg-tertiary: #2e1f1a;
+  --bg-card: #35281f;
+  --bg-hover: #423525;
+  
+  --accent-primary: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-light: #fcd34d;
+  
+  --border-color: #443d2d;
+  --border-hover: #5c523d;
+}
+
+/* Alternative Palette 5: Indigo & Midnight */
+[data-theme="indigo"] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #141420;
+  --bg-tertiary: #1a1a2e;
+  --bg-card: #1f1f35;
+  --bg-hover: #252542;
+  
+  --accent-primary: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-light: #a5b4fc;
+  
+  --border-color: #2d2d44;
+  --border-hover: #3d3d5c;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-hover);
 }
