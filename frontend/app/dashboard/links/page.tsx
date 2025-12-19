@@ -6,6 +6,23 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+	DndContext,
+	closestCenter,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+	DragEndEvent,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { linkApi } from "@/lib/api";
 
 const linkSchema = z.object({
@@ -27,6 +44,83 @@ interface Link {
 	clicks: number;
 }
 
+// Sortable Link Item Component
+function SortableLinkItem({
+	link,
+	onEdit,
+	onDelete,
+}: {
+	link: Link;
+	onEdit: (link: Link) => void;
+	onDelete: (id: string) => void;
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: link._id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	return (
+		<li ref={setNodeRef} style={style} className="p-4 hover:bg-gray-50">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center flex-1">
+					<button
+						{...attributes}
+						{...listeners}
+						className="mr-3 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+						aria-label="Drag to reorder"
+					>
+						<svg
+							className="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M4 8h16M4 16h16"
+							/>
+						</svg>
+					</button>
+					<div className="flex-1">
+						<h3 className="text-lg font-medium">{link.title}</h3>
+						<p className="text-sm text-gray-600">{link.url}</p>
+						{link.description && (
+							<p className="text-sm text-gray-500 mt-1">{link.description}</p>
+						)}
+						<p className="text-xs text-gray-400 mt-1">{link.clicks} clicks</p>
+					</div>
+				</div>
+				<div className="flex space-x-2">
+					<button
+						onClick={() => onEdit(link)}
+						className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+					>
+						Edit
+					</button>
+					<button
+						onClick={() => onDelete(link._id)}
+						className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+					>
+						Delete
+					</button>
+				</div>
+			</div>
+		</li>
+	);
+}
+
 export default function LinksPage() {
 	const { data: session, status } = useSession();
 	const router = useRouter();
@@ -35,6 +129,15 @@ export default function LinksPage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingLink, setEditingLink] = useState<Link | null>(null);
 	const [error, setError] = useState<string>("");
+	const [isReordering, setIsReordering] = useState(false);
+
+	// Configure sensors for drag and drop
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
 
 	const {
 		register,
@@ -115,6 +218,50 @@ export default function LinksPage() {
 		}
 	};
 
+	const handleDragEnd = async (event: DragEndEvent) => {
+		const { active, over } = event;
+
+		if (!over || active.id === over.id) {
+			return;
+		}
+
+		const oldIndex = links.findIndex((link) => link._id === active.id);
+		const newIndex = links.findIndex((link) => link._id === over.id);
+
+		if (oldIndex === -1 || newIndex === -1) {
+			return;
+		}
+
+		// Optimistically update UI
+		const newLinks = arrayMove(links, oldIndex, newIndex);
+		setLinks(newLinks);
+		setIsReordering(true);
+
+		try {
+			// Extract link IDs in new order
+			const linkIds = newLinks.map((link) => link._id);
+			const response = await linkApi.reorder(
+				linkIds,
+				session!.accessToken as string
+			);
+
+			if (response.success) {
+				// Update with server response (includes updated order values)
+				setLinks(response.data.links);
+			} else {
+				// Revert on error
+				loadLinks();
+				setError("Failed to reorder links. Please try again.");
+			}
+		} catch (err: any) {
+			// Revert on error
+			loadLinks();
+			setError(err.message || "Failed to reorder links");
+		} finally {
+			setIsReordering(false);
+		}
+	};
+
 	if (status === "loading" || isLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
@@ -174,38 +321,37 @@ export default function LinksPage() {
 						</div>
 					) : (
 						<div className="bg-white shadow rounded-lg overflow-hidden">
-							<ul className="divide-y divide-gray-200">
-								{links.map((link) => (
-									<li key={link._id} className="p-4 hover:bg-gray-50">
-										<div className="flex items-center justify-between">
-											<div className="flex-1">
-												<h3 className="text-lg font-medium">{link.title}</h3>
-												<p className="text-sm text-gray-600">{link.url}</p>
-												{link.description && (
-													<p className="text-sm text-gray-500 mt-1">{link.description}</p>
-												)}
-												<p className="text-xs text-gray-400 mt-1">
-													{link.clicks} clicks
-												</p>
-											</div>
-											<div className="flex space-x-2">
-												<button
-													onClick={() => openEditModal(link)}
-													className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-												>
-													Edit
-												</button>
-												<button
-													onClick={() => handleDelete(link._id)}
-													className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-												>
-													Delete
-												</button>
-											</div>
-										</div>
-									</li>
-								))}
-							</ul>
+							{isReordering && (
+								<div className="px-4 py-2 bg-blue-50 border-b border-blue-200 text-sm text-blue-700">
+									Reordering links...
+								</div>
+							)}
+							<DndContext
+								sensors={sensors}
+								collisionDetection={closestCenter}
+								onDragEnd={handleDragEnd}
+							>
+								<SortableContext
+									items={links.map((link) => link._id)}
+									strategy={verticalListSortingStrategy}
+								>
+									<ul className="divide-y divide-gray-200">
+										{links.map((link) => (
+											<SortableLinkItem
+												key={link._id}
+												link={link}
+												onEdit={openEditModal}
+												onDelete={handleDelete}
+											/>
+										))}
+									</ul>
+								</SortableContext>
+							</DndContext>
+							{links.length > 1 && (
+								<div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+									💡 Drag the handle (☰) to reorder your links
+								</div>
+							)}
 						</div>
 					)}
 				</div>

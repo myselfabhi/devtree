@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import Link from "../models/Link.js";
 import Profile from "../models/Profile.js";
 
@@ -286,6 +287,8 @@ export const reorderLinks = async (
 		}
 
 		const { linkIds } = req.body;
+		console.log("Reorder request - linkIds:", linkIds);
+		console.log("Reorder request - userId:", userId);
 
 		if (!Array.isArray(linkIds) || linkIds.length === 0) {
 			return res.status(400).json({
@@ -297,17 +300,23 @@ export const reorderLinks = async (
 		// Get user's profile
 		const profile = await Profile.findOne({ userId });
 		if (!profile) {
+			console.log("Profile not found for userId:", userId);
 			return res.status(404).json({
 				success: false,
 				message: "Profile not found",
 			});
 		}
 
+		console.log("Profile found:", profile._id);
+
+		// Mongoose can handle string IDs in $in queries, but let's be explicit
 		// Verify all links belong to user's profile
 		const links = await Link.find({
 			_id: { $in: linkIds },
 			profileId: profile._id,
 		});
+
+		console.log("Found links:", links.length, "Expected:", linkIds.length);
 
 		if (links.length !== linkIds.length) {
 			return res.status(400).json({
@@ -316,28 +325,35 @@ export const reorderLinks = async (
 			});
 		}
 
-		// Update order for each link
-		const updatePromises = linkIds.map((linkId, index) => {
-			return Link.updateOne({ _id: linkId }, { order: index });
-		});
+		// Update order for each link using bulkWrite for better performance
+		const bulkOps = linkIds.map((linkId, index) => ({
+			updateOne: {
+				filter: { _id: linkId, profileId: profile._id },
+				update: { $set: { order: index } },
+			},
+		}));
 
-		await Promise.all(updatePromises);
+		await Link.bulkWrite(bulkOps);
 
 		// Get updated links
 		const updatedLinks = await Link.find({
 			_id: { $in: linkIds },
+			profileId: profile._id,
 		}).sort({ order: 1 });
+
+		console.log("Reorder successful");
 
 		res.status(200).json({
 			success: true,
 			message: "Links reordered successfully",
 			data: { links: updatedLinks },
 		});
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Reorder links error:", error);
+		console.error("Error stack:", error.stack);
 		res.status(500).json({
 			success: false,
-			message: "Internal server error",
+			message: error.message || "Internal server error",
 		});
 	}
 };
