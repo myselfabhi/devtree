@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 
 dotenv.config();
 
@@ -22,8 +23,15 @@ app.get("/api", (req, res) => {
 	res.json({ message: "Linktree Backend API" });
 });
 
-// Start server
-app.listen(PORT, () => {
-	console.log(`🚀 Backend server running on http://localhost:${PORT}`);
-});
+// Connect to MongoDB and start server
+connectDB()
+	.then(() => {
+		app.listen(PORT, () => {
+			console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+		});
+	})
+	.catch((error) => {
+		console.error("❌ Failed to connect to MongoDB:", error);
+		process.exit(1);
+	});
 
