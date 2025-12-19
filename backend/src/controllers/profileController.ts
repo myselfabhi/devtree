@@ -7,6 +7,7 @@ interface CreateProfileBody {
 	displayName: string;
 	bio?: string;
 	avatar?: string;
+	font?: string;
 }
 
 interface UpdateProfileBody {

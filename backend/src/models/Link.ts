@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ILink extends Document {
-	_id: string;
 	profileId: mongoose.Types.ObjectId;
 	title: string;
 	url: string;
