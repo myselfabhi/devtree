@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
@@ -18,10 +19,13 @@ app.get("/health", (req, res) => {
 	res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// API routes will go here
+// API routes
 app.get("/api", (req, res) => {
 	res.json({ message: "Linktree Backend API" });
 });
+
+// Authentication routes
+app.use("/api/auth", authRoutes);
 
 // Connect to MongoDB and start server
 connectDB()

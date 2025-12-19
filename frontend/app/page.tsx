@@ -1,75 +1,30 @@
-import Image from "next/image";
-import { Profile } from "./types/profile";
-
-const profileData: Profile = {
-  name: "Your Name",
-  bio: "A short description about yourself",
-  avatar: "/avatar.jpg",  // or leave undefined
-  links: [
-    {
-      title: "Portfolio",
-      url: "https://yourportfolio.com"
-    },
-    {
-      title: "GitHub",
-      url: "https://github.com/myselfabhi"
-    },
-    {
-      title: "Twitter",
-      url: "https://twitter.com/_myselfabhi"
-    },
-    {
-      title: "LinkedIn",
-      url: "https://linkedin.com/in/yourprofile"
-    }
-  ]
-};
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
-      <div className="w-full max-w-md px-6 py-8">
-        {/* Profile Header */}
-        <div className="text-center mb-8">
-          {/* Avatar - conditional rendering */}
-          {profileData.avatar && (
-            <Image
-              src={profileData.avatar}
-              alt={profileData.name}
-              width={100}
-              height={100}
-              className="rounded-full mx-auto mb-4"
-            />
-          )}
-          
-          {/* Name */}
-          <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
-            {profileData.name}
-          </h1>
-          
-          {/* Bio - conditional rendering */}
-          {profileData.bio && (
-            <p className="text-gray-600 dark:text-gray-400">
-              {profileData.bio}
-            </p>
-          )}
-        </div>
-        
-        {/* Links Section */}
-        <div className="space-y-3">
-          {profileData.links.map((link, index) => (
-            <a
-              key={index}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              {link.title}
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+			<div className="max-w-4xl mx-auto px-4 text-center">
+				<h1 className="text-5xl font-bold text-gray-900 mb-4">
+					Create Your Link Page
+				</h1>
+				<p className="text-xl text-gray-600 mb-8">
+					Share all your links in one beautiful page
+				</p>
+				<div className="flex gap-4 justify-center">
+					<Link
+						href="/signup"
+						className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+					>
+						Get Started
+					</Link>
+					<Link
+						href="/login"
+						className="px-6 py-3 bg-white text-blue-600 font-medium rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors"
+					>
+						Sign In
+					</Link>
+				</div>
+			</div>
+		</div>
+	);
 }
