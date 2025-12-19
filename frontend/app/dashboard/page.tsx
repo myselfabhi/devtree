@@ -285,7 +285,7 @@ export default function DashboardPage() {
 							)}
 
 								<Link href="/dashboard/profile">
-									<Button className="w-full" className="mt-6" variant="outline">
+									<Button className="w-full mt-6" variant="outline">
 										{profile ? "Edit Profile" : "Create Profile"}
 									</Button>
 								</Link>
@@ -350,7 +350,7 @@ export default function DashboardPage() {
 							)}
 
 								<Link href="/dashboard/links">
-									<Button className="w-full" className="mt-6">
+									<Button className="w-full mt-6">
 										Manage Links
 									</Button>
 								</Link>
