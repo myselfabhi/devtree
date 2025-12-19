@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { ExternalLink } from "lucide-react";
 import { profileApi, linkApi } from "@/lib/api";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Helper function to load Google Font
 function loadGoogleFont(fontName: string) {
@@ -99,40 +101,32 @@ export default function PublicProfilePage() {
 
 	if (isLoading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
-				<motion.div
-					initial={{ opacity: 0, scale: 0.8 }}
-					animate={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.3 }}
-					className="text-lg"
-				>
-					<motion.div
-						animate={{ rotate: 360 }}
-						transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-						className="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full mr-3"
-					/>
-					Loading...
-				</motion.div>
+			<div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+				<LoadingSpinner />
 			</div>
 		);
 	}
 
 	if (error || !profile) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
 				<div className="text-center">
-					<h1 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h1>
-					<p className="text-gray-600">The profile you're looking for doesn't exist.</p>
+					<h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
+						Profile Not Found
+					</h1>
+					<p className="text-[var(--text-secondary)]">
+						The profile you're looking for doesn't exist.
+					</p>
 				</div>
 			</div>
 		);
 	}
 
-	// Get colors from profile (with defaults)
-	const bgColor = (profile.colors as any)?.background || "#ffffff";
-	const textColor = (profile.colors as any)?.text || "#000000";
-	const buttonColor = (profile.colors as any)?.button || "#3b82f6";
-	const buttonHoverColor = (profile.colors as any)?.buttonHover || "#2563eb";
+	// Get colors from profile (with defaults - using dark theme)
+	const bgColor = (profile.colors as any)?.background || "var(--bg-primary)";
+	const textColor = (profile.colors as any)?.text || "var(--text-primary)";
+	const buttonColor = (profile.colors as any)?.button || "var(--accent-purple)";
+	const buttonHoverColor = (profile.colors as any)?.buttonHover || "var(--accent-purple-hover)";
 	
 	// Get font from profile (with default)
 	const fontFamily = profile.font ? `"${profile.font}", sans-serif` : "inherit";
@@ -175,12 +169,8 @@ export default function PublicProfilePage() {
 	};
 
 	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.3 }}
-			className="min-h-screen flex items-center justify-center px-4 py-8"
+		<div
+			className="min-h-screen relative overflow-hidden"
 			style={{
 				backgroundColor: bgColor,
 				backgroundImage: profile.backgroundImage
@@ -191,54 +181,74 @@ export default function PublicProfilePage() {
 				fontFamily: fontFamily,
 			}}
 		>
-			<div className="w-full max-w-md">
+			{/* Animated background gradient */}
+			{!profile.backgroundImage && (
+				<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
+			)}
+
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}
+				transition={{ duration: 0.3 }}
+				className="relative z-10 container mx-auto px-4 py-12 max-w-2xl"
+			>
 				{/* Profile Header */}
 				<motion.div
-					variants={itemVariants}
-					initial="hidden"
-					animate="visible"
-					className="text-center mb-8"
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+					className="text-center mb-12"
 				>
-					{profile.avatar && (
-						<motion.div
-							variants={avatarVariants}
-							initial="hidden"
-							animate="visible"
-							className="mb-4 flex justify-center"
-						>
-							<motion.div
-								whileHover={{ scale: 1.1, rotate: 5 }}
-								whileTap={{ scale: 0.95 }}
-								transition={{ type: "spring", stiffness: 300 }}
-							>
-								<Image
-									src={profile.avatar}
-									alt={profile.displayName}
-									width={120}
-									height={120}
-									className="rounded-full border-4 border-white shadow-lg"
-								/>
-							</motion.div>
-						</motion.div>
-					)}
+					{/* Avatar */}
+					<motion.div
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+						className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl"
+					>
+						{profile.avatar ? (
+							<Image
+								src={profile.avatar}
+								alt={profile.displayName}
+								width={128}
+								height={128}
+								className="rounded-full"
+							/>
+						) : (
+							<span className="text-4xl text-white">
+								{profile.displayName.charAt(0).toUpperCase()}
+							</span>
+						)}
+					</motion.div>
 
+					{/* Name and Username */}
 					<motion.h1
-						variants={itemVariants}
-						initial="hidden"
-						animate="visible"
-						className="text-3xl font-bold mb-2"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.3 }}
+						className="text-4xl mb-2 font-bold"
 						style={{ color: textColor }}
 					>
 						{profile.displayName}
 					</motion.h1>
 
+					<motion.p
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.4 }}
+						className="text-[var(--text-secondary)] mb-4"
+					>
+						@{profile.username}
+					</motion.p>
+
+					{/* Bio */}
 					{profile.bio && (
 						<motion.p
-							variants={itemVariants}
-							initial="hidden"
-							animate="visible"
-							className="text-lg mb-4"
-							style={{ color: textColor, opacity: 0.8 }}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ delay: 0.5 }}
+							className="text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed"
 						>
 							{profile.bio}
 						</motion.p>
@@ -246,83 +256,74 @@ export default function PublicProfilePage() {
 				</motion.div>
 
 				{/* Links */}
-				<motion.div
-					variants={containerVariants}
-					initial="hidden"
-					animate="visible"
-					className="space-y-3"
-				>
-					<AnimatePresence>
-						{links.map((link, index) => (
-							<motion.button
-								key={link._id}
-								variants={itemVariants}
-								initial="hidden"
-								animate="visible"
-								exit={{ opacity: 0, scale: 0.8 }}
-								whileHover={{
-									scale: 1.05,
-									y: -5,
-									transition: { type: "spring", stiffness: 400, damping: 17 },
-								}}
-								whileTap={{ scale: 0.95 }}
-								onClick={() => handleLinkClick(link._id, link.url)}
-								className="w-full p-4 rounded-lg text-center font-medium shadow-md relative overflow-hidden"
-								style={{
-									backgroundColor: buttonColor,
-									color: "#ffffff",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.backgroundColor = buttonHoverColor;
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.backgroundColor = buttonColor;
-								}}
-							>
-								<motion.div
-									initial={{ x: -100, opacity: 0 }}
-									animate={{ x: 0, opacity: 1 }}
-									transition={{ delay: index * 0.1 + 0.3 }}
-									className="flex items-center justify-center"
-								>
-									{link.icon && (
-										<motion.img
+				<div className="space-y-4">
+					{links.map((link, index) => (
+						<motion.a
+							key={link._id}
+							href={link.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.6 + index * 0.1 }}
+							whileHover={{ scale: 1.05, y: -4 }}
+							whileTap={{ scale: 0.98 }}
+							onClick={() => handleLinkClick(link._id, link.url)}
+							className="block w-full p-5 rounded-2xl border border-[var(--card-border)] transition-all group"
+							style={{
+								backgroundColor: buttonColor,
+								boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+							}}
+							onMouseEnter={(e) => {
+								e.currentTarget.style.backgroundColor = buttonHoverColor;
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.backgroundColor = buttonColor;
+							}}
+						>
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-4 flex-1 min-w-0">
+									{link.icon ? (
+										<img
 											src={link.icon}
 											alt=""
-											className="inline-block w-5 h-5 mr-2 align-middle"
-											whileHover={{ rotate: 360 }}
-											transition={{ duration: 0.5 }}
+											className="flex-shrink-0 w-6 h-6"
 										/>
+									) : (
+										<ExternalLink size={24} className="flex-shrink-0 text-white/70" />
 									)}
-									<span>{link.title}</span>
-								</motion.div>
-								{link.description && (
-									<motion.p
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										transition={{ delay: index * 0.1 + 0.5 }}
-										className="text-sm mt-1 opacity-90"
-									>
-										{link.description}
-									</motion.p>
-								)}
-							</motion.button>
-						))}
-					</AnimatePresence>
-				</motion.div>
+									<div className="flex-1 min-w-0 text-left">
+										<p className="font-medium mb-0.5 truncate text-white">
+											{link.title}
+										</p>
+										{link.description && (
+											<p className="text-sm text-white/70 truncate">
+												{link.description}
+											</p>
+										)}
+									</div>
+								</div>
+								<ExternalLink
+									size={20}
+									className="flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity text-white"
+								/>
+							</div>
+						</motion.a>
+					))}
+				</div>
 
 				{links.length === 0 && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						className="text-center mt-8"
-						style={{ color: textColor, opacity: 0.6 }}
+						transition={{ delay: 0.8 }}
+						className="text-center mt-16"
 					>
-						<p>No links available yet.</p>
+						<p className="text-[var(--text-secondary)]">No links available yet.</p>
 					</motion.div>
 				)}
-			</div>
-		</motion.div>
+			</motion.div>
+		</div>
 	);
 }
 

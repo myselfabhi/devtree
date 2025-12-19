@@ -6,14 +6,24 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Check, X } from "lucide-react";
 import { profileApi } from "@/lib/api";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const profileSchema = z.object({
 	username: z
 		.string()
 		.min(3, "Username must be at least 3 characters")
 		.max(30, "Username must be at most 30 characters")
-		.regex(/^[a-z0-9_-]+$/, "Username can only contain lowercase letters, numbers, hyphens, and underscores"),
+		.regex(
+			/^[a-z0-9_-]+$/,
+			"Username can only contain lowercase letters, numbers, hyphens, and underscores"
+		),
 	displayName: z.string().min(2, "Display name must be at least 2 characters"),
 	bio: z.string().optional(),
 	font: z.string().optional(),
@@ -89,7 +99,6 @@ export default function ProfilePage() {
 			}
 		} catch (err: any) {
 			if (err.message.includes("not found")) {
-				// Profile doesn't exist yet, that's okay
 				setProfile(null);
 			} else {
 				setError(err.message || "Failed to load profile");
@@ -117,10 +126,8 @@ export default function ProfilePage() {
 		try {
 			const token = session!.accessToken as string;
 			if (profile) {
-				// Update existing profile
 				await profileApi.update(data, token);
 			} else {
-				// Create new profile
 				await profileApi.create(data, token);
 			}
 			router.push("/dashboard");
@@ -133,8 +140,8 @@ export default function ProfilePage() {
 
 	if (status === "loading" || isLoading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="text-lg">Loading...</div>
+			<div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+				<LoadingSpinner />
 			</div>
 		);
 	}
@@ -144,97 +151,102 @@ export default function ProfilePage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
-			<nav className="bg-white shadow">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex justify-between h-16">
-						<div className="flex items-center space-x-4">
-							<button
-								onClick={() => router.push("/dashboard")}
-								className="text-gray-600 hover:text-gray-900"
-							>
-								← Back to Dashboard
-							</button>
-						</div>
-					</div>
+		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)]">
+			{/* Navigation */}
+			<nav className="bg-[var(--card-bg)]/80 backdrop-blur-xl border-b border-[var(--card-border)]">
+				<div className="container mx-auto px-4 py-4">
+					<Button
+						variant="secondary"
+						onClick={() => router.push("/dashboard")}
+						className="flex items-center gap-2"
+					>
+						<ArrowLeft size={18} />
+						Back to Dashboard
+					</Button>
 				</div>
 			</nav>
 
-			<main className="max-w-2xl mx-auto py-6 sm:px-6 lg:px-8">
-				<div className="px-4 py-6 sm:px-0">
-					<div className="bg-white shadow rounded-lg p-6">
-						<h2 className="text-2xl font-bold mb-6">
-							{profile ? "Edit Profile" : "Create Profile"}
-						</h2>
+			<main className="container mx-auto px-4 py-8 max-w-2xl">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+				>
+					<Card>
+						<CardContent className="p-6">
+							<h2 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">
+								{profile ? "Edit Profile" : "Create Profile"}
+							</h2>
 
-						{error && (
-							<div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-								{error}
-							</div>
-						)}
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, x: -20 }}
+									animate={{ opacity: 1, x: 0 }}
+									exit={{ opacity: 0, x: 20 }}
+									className="mb-4 px-4 py-3 rounded-lg border border-red-500/50 bg-red-500/10 text-red-500"
+								>
+									{error}
+								</motion.div>
+							)}
+						</AnimatePresence>
 
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 							<div>
-								<label htmlFor="username" className="block text-sm font-medium text-gray-700">
-									Username
-								</label>
-								<input
+								<Input
 									{...register("username")}
 									type="text"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+									label="Username"
 									placeholder="johndoe"
+									error={errors.username?.message}
 								/>
-								{errors.username && (
-									<p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
-								)}
 								{watchedUsername && watchedUsername.length >= 3 && usernameAvailable !== null && (
-									<p
-										className={`mt-1 text-sm ${
-											usernameAvailable ? "text-green-600" : "text-red-600"
+									<motion.div
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										className={`mt-2 flex items-center gap-2 text-sm ${
+											usernameAvailable ? "text-green-500" : "text-red-500"
 										}`}
 									>
-										{usernameAvailable ? "✓ Username available" : "✗ Username taken"}
-									</p>
+										{usernameAvailable ? (
+											<>
+												<Check size={16} />
+												Username available
+											</>
+										) : (
+											<>
+												<X size={16} />
+												Username taken
+											</>
+										)}
+									</motion.div>
 								)}
-								<p className="mt-1 text-xs text-gray-500">
+								<p className="mt-1 text-xs text-[var(--text-secondary)]">
 									Your profile will be available at /{watchedUsername || "username"}
 								</p>
 							</div>
 
-							<div>
-								<label htmlFor="displayName" className="block text-sm font-medium text-gray-700">
-									Display Name
-								</label>
-								<input
-									{...register("displayName")}
-									type="text"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-									placeholder="John Doe"
-								/>
-								{errors.displayName && (
-									<p className="mt-1 text-sm text-red-600">{errors.displayName.message}</p>
-								)}
-							</div>
+							<Input
+								{...register("displayName")}
+								type="text"
+								label="Display Name"
+								placeholder="John Doe"
+								error={errors.displayName?.message}
+							/>
+
+							<Textarea
+								{...register("bio")}
+								label="Bio (Optional)"
+								placeholder="Tell us about yourself..."
+								rows={4}
+							/>
 
 							<div>
-								<label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-									Bio (Optional)
-								</label>
-								<textarea
-									{...register("bio")}
-									rows={4}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-									placeholder="Tell us about yourself..."
-								/>
-							</div>
-
-							<div>
-								<label htmlFor="font" className="block text-sm font-medium text-gray-700">
+								<label className="block mb-2 text-[var(--text-secondary)] font-medium">
 									Font (Optional)
 								</label>
 								<select
 									{...register("font")}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+									className="w-full px-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] focus:border-transparent transition-all"
 								>
 									{GOOGLE_FONTS.map((font) => (
 										<option key={font.value} value={font.value}>
@@ -242,34 +254,31 @@ export default function ProfilePage() {
 										</option>
 									))}
 								</select>
-								<p className="mt-1 text-xs text-gray-500">
+								<p className="mt-1 text-xs text-[var(--text-secondary)]">
 									Choose a font for your public profile page
 								</p>
 							</div>
 
-							<div className="flex justify-end space-x-3">
-								<button
+							<div className="flex justify-end gap-3 pt-4">
+								<Button
 									type="button"
+									variant="outline"
 									onClick={() => router.push("/dashboard")}
-									className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
 								>
 									Cancel
-								</button>
-								<button
+								</Button>
+								<Button
 									type="submit"
 									disabled={isSaving || (usernameAvailable === false && !profile)}
-									className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									{isSaving ? "Saving..." : profile ? "Update Profile" : "Create Profile"}
-								</button>
+									{isSaving ? <LoadingSpinner /> : profile ? "Update Profile" : "Create Profile"}
+								</Button>
 							</div>
 						</form>
-					</div>
-				</div>
+						</CardContent>
+					</Card>
+				</motion.div>
 			</main>
 		</div>
 	);
 }
-
-
-

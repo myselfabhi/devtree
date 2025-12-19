@@ -1,24 +1,23 @@
 @import "tailwindcss";
 
-/* Modern Dark Theme Color Palettes */
+/* Modern Dark Theme Color Palettes - Refined from Figma Design */
 :root {
   /* Default: Purple & Dark Gray (Modern, Trendy) */
   --bg-primary: #0a0a0f;
   --bg-secondary: #141420;
   --bg-tertiary: #1a1a2e;
-  --bg-card: #1f1f35;
-  --bg-hover: #252542;
+  --card-bg: #1f1f35;
+  --card-border: #2d2d44;
+  --input-bg: #141420;
+  --input-border: #2d2d44;
   
   --text-primary: #f8f9fa;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
   
-  --accent-primary: #8b5cf6;
-  --accent-hover: #a78bfa;
+  --accent-purple: #8b5cf6;
+  --accent-purple-hover: #7c3aed;
   --accent-light: #c4b5fd;
-  
-  --border-color: #2d2d44;
-  --border-hover: #3d3d5c;
   
   --success: #10b981;
   --error: #ef4444;
@@ -26,6 +25,14 @@
   
   --shadow: rgba(0, 0, 0, 0.3);
   --shadow-lg: rgba(0, 0, 0, 0.5);
+  
+  /* Legacy support */
+  --bg-card: var(--card-bg);
+  --bg-hover: #252542;
+  --accent-primary: var(--accent-purple);
+  --accent-hover: var(--accent-purple-hover);
+  --border-color: var(--card-border);
+  --border-hover: #3d3d5c;
 }
 
 /* Alternative Palette 1: Emerald & Charcoal */

@@ -8,6 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 
 const loginSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -54,202 +58,127 @@ export default function LoginPage() {
 	};
 
 	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			className="min-h-screen flex items-center justify-center px-4"
-			style={{
-				background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%)",
-			}}
-		>
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5 }}
-				className="max-w-md w-full space-y-8"
-			>
+		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden flex items-center justify-center px-4">
+			{/* Animated background orbs - matching Figma design */}
+			<div className="absolute top-20 left-20 w-96 h-96 bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
+			<div
+				className="absolute bottom-20 right-20 w-96 h-96 bg-purple-900/20 rounded-full filter blur-3xl animate-pulse"
+				style={{ animationDelay: "1.5s" }}
+			/>
+
+			<div className="relative z-10 w-full max-w-md">
+				{/* Logo */}
 				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.2 }}
+					className="text-center mb-8"
 				>
-					<motion.h2
-						initial={{ scale: 0.9 }}
-						animate={{ scale: 1 }}
-						transition={{ type: "spring", stiffness: 200 }}
-						className="mt-6 text-center text-3xl font-extrabold"
-						style={{ color: "var(--text-primary)" }}
-					>
-						Sign in to your account
-					</motion.h2>
-					<p className="mt-2 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
-						Or{" "}
-						<motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-						<Link
-							href="/signup"
-							className="font-medium transition-colors"
-							style={{ color: "var(--accent-primary)" }}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.color = "var(--accent-hover)";
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.color = "var(--accent-primary)";
-							}}
-						>
-							create a new account
-						</Link>
-						</motion.span>
-					</p>
+					<div className="flex items-center justify-center gap-2 mb-2">
+						<Link2 className="text-[var(--accent-purple)]" size={32} />
+						<span className="text-2xl font-semibold text-[var(--text-primary)]">
+							Linktree
+						</span>
+					</div>
+					<p className="text-[var(--text-secondary)]">Welcome back!</p>
 				</motion.div>
-				<motion.form
+
+				{/* Form Card */}
+				<motion.div
+					initial={{ opacity: 0, scale: 0.9 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ delay: 0.1 }}
+				>
+					<Card className="p-8 shadow-2xl">
+						<CardContent className="p-0">
+							<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+								<AnimatePresence>
+									{error && (
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											exit={{ opacity: 0, x: 20 }}
+											className="px-4 py-3 rounded-lg border border-red-500/50 bg-red-500/10 text-red-500 text-sm"
+										>
+											{error}
+										</motion.div>
+									)}
+								</AnimatePresence>
+
+								<motion.div
+									initial={{ opacity: 0, x: -20 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ duration: 0.3 }}
+								>
+									<Input
+										{...register("email")}
+										type="email"
+										label="Email"
+										placeholder="you@example.com"
+										error={errors.email?.message}
+										autoComplete="email"
+									/>
+								</motion.div>
+
+								<motion.div
+									initial={{ opacity: 0, x: -20 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ duration: 0.3, delay: 0.1 }}
+								>
+									<Input
+										{...register("password")}
+										type="password"
+										label="Password"
+										placeholder="••••••••"
+										error={errors.password?.message}
+										autoComplete="current-password"
+									/>
+								</motion.div>
+
+								<Button type="submit" disabled={isLoading} className="w-full mt-6">
+									{isLoading ? (
+										<motion.div
+											animate={{ rotate: 360 }}
+											transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+											className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+										/>
+									) : (
+										"Sign In"
+									)}
+								</Button>
+							</form>
+
+							<div className="mt-6 text-center">
+								<Link
+									href="/signup"
+									className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors text-sm"
+								>
+									Don't have an account? Sign up
+								</Link>
+							</div>
+
+							<div className="mt-4 text-center">
+								<button className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors">
+									Forgot password?
+								</button>
+							</div>
+						</CardContent>
+					</Card>
+				</motion.div>
+
+				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.3 }}
-					className="mt-8 space-y-6"
-					onSubmit={handleSubmit(onSubmit)}
+					className="text-center mt-6"
 				>
-					<AnimatePresence>
-						{error && (
-							<motion.div
-								initial={{ opacity: 0, x: -20 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: 20 }}
-								className="px-4 py-3 rounded border"
-								style={{
-									backgroundColor: "rgba(239, 68, 68, 0.1)",
-									borderColor: "var(--error)",
-									color: "var(--error)",
-								}}
-							>
-								{error}
-							</motion.div>
-						)}
-					</AnimatePresence>
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.4 }}
-						className="rounded-md shadow-lg -space-y-px p-6 rounded-lg"
-						style={{
-							backgroundColor: "var(--bg-card)",
-							border: "1px solid var(--border-color)",
-						}}
+					<Link
+						href="/"
+						className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors text-sm"
 					>
-						<div>
-							<label htmlFor="email" className="sr-only">
-								Email address
-							</label>
-							<motion.input
-								whileFocus={{ scale: 1.02 }}
-								{...register("email")}
-								type="email"
-								autoComplete="email"
-								className="appearance-none rounded-none relative block w-full px-3 py-2 border rounded-t-md focus:outline-none focus:z-10 sm:text-sm transition-colors"
-								style={{
-									borderColor: "var(--border-color)",
-									backgroundColor: "var(--bg-secondary)",
-									color: "var(--text-primary)",
-								}}
-								onFocus={(e) => {
-									e.currentTarget.style.borderColor = "var(--accent-primary)";
-								}}
-								onBlur={(e) => {
-									e.currentTarget.style.borderColor = "var(--border-color)";
-								}}
-								placeholder="Email address"
-							/>
-							<AnimatePresence>
-								{errors.email && (
-									<motion.p
-										initial={{ opacity: 0, height: 0 }}
-										animate={{ opacity: 1, height: "auto" }}
-										exit={{ opacity: 0, height: 0 }}
-										className="mt-1 text-sm text-red-600"
-									>
-										{errors.email.message}
-									</motion.p>
-								)}
-							</AnimatePresence>
-						</div>
-						<div>
-							<label htmlFor="password" className="sr-only">
-								Password
-							</label>
-							<motion.input
-								whileFocus={{ scale: 1.02 }}
-								{...register("password")}
-								type="password"
-								autoComplete="current-password"
-								className="appearance-none rounded-none relative block w-full px-3 py-2 border rounded-b-md focus:outline-none focus:z-10 sm:text-sm transition-colors"
-								style={{
-									borderColor: "var(--border-color)",
-									backgroundColor: "var(--bg-secondary)",
-									color: "var(--text-primary)",
-								}}
-								onFocus={(e) => {
-									e.currentTarget.style.borderColor = "var(--accent-primary)";
-								}}
-								onBlur={(e) => {
-									e.currentTarget.style.borderColor = "var(--border-color)";
-								}}
-								placeholder="Password"
-							/>
-							<AnimatePresence>
-								{errors.password && (
-									<motion.p
-										initial={{ opacity: 0, height: 0 }}
-										animate={{ opacity: 1, height: "auto" }}
-										exit={{ opacity: 0, height: 0 }}
-										className="mt-1 text-sm text-red-600"
-									>
-										{errors.password.message}
-									</motion.p>
-								)}
-							</AnimatePresence>
-						</div>
-					</motion.div>
-
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ delay: 0.5 }}
-					>
-						<motion.button
-							whileHover={{ scale: 1.02 }}
-							whileTap={{ scale: 0.98 }}
-							type="submit"
-							disabled={isLoading}
-							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
-							style={{
-								backgroundColor: "var(--accent-primary)",
-								color: "var(--text-primary)",
-							}}
-							onMouseEnter={(e) => {
-								if (!isLoading) {
-									e.currentTarget.style.backgroundColor = "var(--accent-hover)";
-								}
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.backgroundColor = "var(--accent-primary)";
-							}}
-						>
-							{isLoading ? (
-								<motion.span
-									animate={{ rotate: 360 }}
-									transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-									className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-								/>
-							) : (
-								"Sign in"
-							)}
-						</motion.button>
-					</motion.div>
-				</motion.form>
-			</motion.div>
-		</motion.div>
+						← Back to home
+					</Link>
+				</motion.div>
+			</div>
+		</div>
 	);
 }
-
-
-
