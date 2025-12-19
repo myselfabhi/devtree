@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
+import profileRoutes from "./routes/profile.js";
+import linkRoutes from "./routes/link.js";
 
 dotenv.config();
 
@@ -26,6 +28,12 @@ app.get("/api", (req, res) => {
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
+
+// Profile routes
+app.use("/api/profile", profileRoutes);
+
+// Link routes
+app.use("/api/links", linkRoutes);
 
 // Connect to MongoDB and start server
 connectDB()
