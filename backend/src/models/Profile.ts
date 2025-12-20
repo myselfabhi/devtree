@@ -25,7 +25,6 @@ const ProfileSchema: Schema = new Schema(
 		username: {
 			type: String,
 			required: true,
-			unique: true,
 			lowercase: true,
 			trim: true,
 			match: [/^[a-z0-9_-]+$/, "Username can only contain lowercase letters, numbers, hyphens, and underscores"],
@@ -60,8 +59,8 @@ const ProfileSchema: Schema = new Schema(
 	}
 );
 
-// Index for faster username lookups
-ProfileSchema.index({ username: 1 });
+// Index for faster username lookups (unique)
+ProfileSchema.index({ username: 1 }, { unique: true });
 
 export default mongoose.models.Profile || mongoose.model<IProfile>("Profile", ProfileSchema);
 

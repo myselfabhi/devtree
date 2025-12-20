@@ -129,16 +129,11 @@ export const getProfile = async (req: Request, res: Response) => {
 
 		const profile = await Profile.findOne({ userId }).populate("userId", "email name");
 
-		if (!profile) {
-			return res.status(404).json({
-				success: false,
-				message: "Profile not found",
-			});
-		}
-
+		// Return 200 with null profile for new users (expected state)
+		// This prevents 404 errors in frontend for users who haven't created a profile yet
 		res.status(200).json({
 			success: true,
-			data: { profile },
+			data: { profile: profile || null },
 		});
 	} catch (error) {
 		console.error("Get profile error:", error);

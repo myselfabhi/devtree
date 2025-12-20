@@ -117,10 +117,13 @@ export const getLinks = async (req: Request, res: Response) => {
 
 		// Get user's profile
 		const profile = await Profile.findOne({ userId });
+		
+		// If no profile exists, return empty array (expected state for new users)
+		// This prevents 404 errors when user hasn't created a profile yet
 		if (!profile) {
-			return res.status(404).json({
-				success: false,
-				message: "Profile not found. Create a profile first.",
+			return res.status(200).json({
+				success: true,
+				data: { links: [] },
 			});
 		}
 
