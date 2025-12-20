@@ -227,14 +227,14 @@ export default function ProfilePage() {
 				</div>
 			</nav>
 
-			<main className="container mx-auto px-4 py-8 max-w-2xl">
+			<main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-2xl">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 				>
 					<Card>
-						<CardContent className="p-6">
-							<h2 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">
+						<CardContent className="p-4 sm:p-6">
+							<h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-[var(--text-primary)]">
 								{profile ? "Edit Profile" : "Create Profile"}
 							</h2>
 
@@ -251,7 +251,7 @@ export default function ProfilePage() {
 							)}
 						</AnimatePresence>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
 							<div>
 								<Input
 									{...register("username")}
@@ -365,15 +365,15 @@ export default function ProfilePage() {
 							/>
 
 							{/* Color Customization - Collapsible */}
-							<div className="space-y-4 p-4 bg-[var(--bg-secondary)] rounded-xl border border-[var(--card-border)]">
-								<div className="flex items-center justify-between">
+							<div className="space-y-4 p-3 sm:p-4 bg-[var(--bg-secondary)] rounded-xl border border-[var(--card-border)]">
+								<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
 									<div className="flex items-center gap-2">
-										<Sparkles size={20} className="text-[var(--accent-purple)]" />
-										<h3 className="text-lg font-semibold text-[var(--text-primary)]">
+										<Sparkles size={18} className="text-[var(--accent-purple)]" />
+										<h3 className="text-base sm:text-lg font-semibold text-[var(--text-primary)]">
 											Color Customization
 										</h3>
 									</div>
-									<div className="flex items-center gap-2">
+									<div className="flex items-center gap-2 w-full sm:w-auto">
 										<Button
 											type="button"
 											variant="outline"
@@ -436,7 +436,7 @@ export default function ProfilePage() {
 										initial={{ opacity: 0, height: 0 }}
 										animate={{ opacity: 1, height: "auto" }}
 										exit={{ opacity: 0, height: 0 }}
-										className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2"
+										className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2"
 									>
 										<ColorPicker
 											label="Background Color"
@@ -479,8 +479,8 @@ export default function ProfilePage() {
 							</div>
 
 							{/* Live Preview */}
-							<div className="p-4 bg-[var(--bg-secondary)] rounded-xl border border-[var(--card-border)]">
-								<h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
+							<div className="p-3 sm:p-4 bg-[var(--bg-secondary)] rounded-xl border border-[var(--card-border)]">
+								<h3 className="text-base sm:text-lg font-semibold text-[var(--text-primary)] mb-3 sm:mb-4">
 									Live Preview
 								</h3>
 								<div
@@ -490,26 +490,26 @@ export default function ProfilePage() {
 										backgroundImage: backgroundPreview ? `url(${backgroundPreview})` : undefined,
 										backgroundSize: "cover",
 										backgroundPosition: "center",
-										minHeight: "300px",
+										minHeight: "250px",
 									}}
 								>
 									{/* Dark overlay for background images in preview */}
 									{backgroundPreview && (
 										<div className="absolute inset-0 bg-black/60 z-0" />
 									)}
-									<div className="p-6 space-y-4 relative z-10">
+									<div className="p-4 sm:p-6 space-y-3 sm:space-y-4 relative z-10">
 										{/* Avatar Preview */}
 										<div className="flex justify-center">
 											{avatarPreview ? (
 												<img
 													src={avatarPreview}
 													alt="Preview"
-													className="w-20 h-20 rounded-full object-cover border-4"
+													className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4"
 													style={{ borderColor: colors.button }}
 												/>
 											) : (
 												<div
-													className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"
+													className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-xl sm:text-2xl font-bold"
 													style={{
 														backgroundColor: colors.button,
 														color: colors.text,
@@ -522,7 +522,7 @@ export default function ProfilePage() {
 										
 										{/* Display Name Preview */}
 										<h2
-											className="text-2xl font-bold text-center"
+											className="text-xl sm:text-2xl font-bold text-center px-2"
 											style={{ color: colors.text }}
 										>
 											{watch("displayName") || "Display Name"}
@@ -561,17 +561,19 @@ export default function ProfilePage() {
 								</div>
 							</div>
 
-							<div className="flex justify-end gap-3 pt-4">
+							<div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
 								<Button
 									type="button"
 									variant="outline"
 									onClick={() => router.push("/dashboard")}
+									className="w-full sm:w-auto"
 								>
 									Cancel
 								</Button>
 								<Button
 									type="submit"
 									disabled={isSaving || (usernameAvailable === false && !profile)}
+									className="w-full sm:w-auto"
 								>
 									{isSaving ? <LoadingSpinner /> : profile ? "Update Profile" : "Create Profile"}
 								</Button>

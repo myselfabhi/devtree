@@ -61,9 +61,9 @@ function LinkItem({
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: index * 0.05 }}
 			whileHover={{ scale: 1.02 }}
-			className="bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-xl p-4 transition-all duration-200"
+			className="bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-xl p-3 sm:p-4 transition-all duration-200"
 		>
-			<div className="flex items-start gap-4">
+					<div className="flex items-start gap-3 sm:gap-4">
 				{/* Link Info */}
 				<div className="flex-1 min-w-0">
 					<div className="flex items-start justify-between gap-4 mb-2">
@@ -224,30 +224,30 @@ export default function LinksPage() {
 				animate={{ opacity: 1, y: 0 }}
 				className="bg-[var(--card-bg)]/80 backdrop-blur-xl border-b border-[var(--card-border)] sticky top-0 z-50"
 			>
-				<div className="container mx-auto px-4 py-4 flex justify-between items-center">
-					<div className="flex items-center gap-4">
+				<div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center gap-2">
+					<div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
 						<Button
 							variant="ghost"
 							onClick={() => router.push("/dashboard")}
-							className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)]"
+							className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)] flex-shrink-0"
 						>
-							<ChevronLeft size={24} />
+							<ChevronLeft size={20} />
 						</Button>
-						<div className="flex items-center gap-2">
-							<Link2 className="text-[var(--accent-purple)]" size={28} />
-							<span className="text-xl font-semibold text-[var(--text-primary)]">
+						<div className="flex items-center gap-2 min-w-0">
+							<Link2 className="text-[var(--accent-purple)] flex-shrink-0" size={24} />
+							<span className="text-base sm:text-xl font-semibold text-[var(--text-primary)] truncate">
 								Manage Links
 							</span>
 						</div>
 					</div>
-					<Button onClick={openCreateModal}>
-						<Plus size={20} className="mr-2" />
-						Add Link
+					<Button onClick={openCreateModal} size="sm" className="flex-shrink-0">
+						<Plus size={18} className="sm:mr-2" />
+						<span className="hidden sm:inline">Add Link</span>
 					</Button>
 				</div>
 			</motion.nav>
 
-			<div className="container mx-auto px-4 py-8 max-w-4xl">
+			<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -331,7 +331,7 @@ export default function LinksPage() {
 							animate={{ opacity: 1, scale: 1, y: 0 }}
 							exit={{ opacity: 0, scale: 0.9, y: 20 }}
 							onClick={(e) => e.stopPropagation()}
-							className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 max-w-lg w-full shadow-2xl"
+							className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto"
 						>
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-2xl font-bold text-[var(--text-primary)]">

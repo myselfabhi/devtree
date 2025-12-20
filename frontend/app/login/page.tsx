@@ -58,7 +58,7 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden flex items-center justify-center px-4">
+		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden flex items-center justify-center px-4 py-6 sm:py-8">
 			{/* Animated background orbs - matching Figma design */}
 			<div className="absolute top-20 left-20 w-96 h-96 bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
 			<div
@@ -74,12 +74,12 @@ export default function LoginPage() {
 					className="text-center mb-8"
 				>
 					<div className="flex items-center justify-center gap-2 mb-2">
-						<Link2 className="text-[var(--accent-purple)]" size={32} />
-						<span className="text-2xl font-semibold text-[var(--text-primary)]">
+						<Link2 className="text-[var(--accent-purple)]" size={28} />
+						<span className="text-xl sm:text-2xl font-semibold text-[var(--text-primary)]">
 							Linktree
 						</span>
 					</div>
-					<p className="text-[var(--text-secondary)]">Welcome back!</p>
+					<p className="text-sm sm:text-base text-[var(--text-secondary)]">Welcome back!</p>
 				</motion.div>
 
 				{/* Form Card */}
@@ -88,7 +88,7 @@ export default function LoginPage() {
 					animate={{ opacity: 1, scale: 1 }}
 					transition={{ delay: 0.1 }}
 				>
-					<Card className="p-8 shadow-2xl">
+					<Card className="p-6 sm:p-8 shadow-2xl">
 						<CardContent className="p-0">
 							<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 								<AnimatePresence>

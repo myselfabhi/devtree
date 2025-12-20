@@ -183,14 +183,14 @@ export default function DashboardPage() {
 				animate={{ opacity: 1, y: 0 }}
 				className="bg-[var(--card-bg)]/80 backdrop-blur-xl border-b border-[var(--card-border)] sticky top-0 z-50"
 			>
-				<div className="container mx-auto px-4 py-4 flex justify-between items-center">
+				<div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
 					<div className="flex items-center gap-2">
-						<Link2 className="text-[var(--accent-purple)]" size={28} />
-						<span className="text-xl font-semibold text-[var(--text-primary)]">
+						<Link2 className="text-[var(--accent-purple)]" size={24} />
+						<span className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">
 							Linktree
 						</span>
 					</div>
-					<div className="flex items-center gap-4">
+					<div className="flex items-center gap-2 sm:gap-4">
 						{profile && (
 							<Link href={`/${profile.username}`} target="_blank">
 								<Button
@@ -214,7 +214,7 @@ export default function DashboardPage() {
 				</div>
 			</motion.nav>
 
-			<div className="container mx-auto px-4 py-8">
+			<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
 				{/* Welcome Section */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
@@ -231,7 +231,7 @@ export default function DashboardPage() {
 
 				{/* Quick Stats */}
 				{links.length > 0 && (
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
 						{[
 							{
 								icon: MousePointer,
@@ -279,7 +279,7 @@ export default function DashboardPage() {
 				)}
 
 				{/* Main Grid */}
-				<div className="grid lg:grid-cols-2 gap-6">
+				<div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
 					{/* Profile Card */}
 					<motion.div
 						initial={{ opacity: 0, x: -20 }}
@@ -291,7 +291,7 @@ export default function DashboardPage() {
 							<CardContent className="p-6 flex flex-col flex-1">
 								<div className="flex items-start justify-between mb-6">
 								<div className="flex items-center gap-4">
-									<div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center overflow-hidden">
+									<div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center overflow-hidden">
 										{profile?.avatar ? (
 											<img
 												src={profile.avatar}

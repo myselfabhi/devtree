@@ -208,21 +208,21 @@ export default function PublicProfilePage() {
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
 				transition={{ duration: 0.3 }}
-				className="relative z-10 container mx-auto px-4 py-12 max-w-2xl"
+				className="relative z-10 container mx-auto px-4 sm:px-6 py-6 sm:py-12 max-w-2xl"
 			>
 				{/* Profile Header */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.5 }}
-					className="text-center mb-12"
+					className="text-center mb-8 sm:mb-12"
 				>
 					{/* Avatar */}
 					<motion.div
 						initial={{ scale: 0 }}
 						animate={{ scale: 1 }}
 						transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-						className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl overflow-hidden"
+						className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl overflow-hidden"
 					>
 						{profile.avatar ? (
 							<img
@@ -231,7 +231,7 @@ export default function PublicProfilePage() {
 								className="w-full h-full object-cover"
 							/>
 						) : (
-							<span className="text-4xl text-white">
+							<span className="text-2xl sm:text-4xl text-white">
 								{profile.displayName.charAt(0).toUpperCase()}
 							</span>
 						)}
@@ -242,7 +242,7 @@ export default function PublicProfilePage() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.3 }}
-						className="text-4xl mb-2 font-bold"
+						className="text-2xl sm:text-4xl mb-2 font-bold px-2"
 						style={{ color: textColor }}
 					>
 						{profile.displayName}
@@ -271,7 +271,7 @@ export default function PublicProfilePage() {
 				</motion.div>
 
 				{/* Links */}
-				<div className="space-y-4">
+				<div className="space-y-3 sm:space-y-4">
 					{links.map((link, index) => (
 						<motion.a
 							key={link._id}
@@ -284,7 +284,7 @@ export default function PublicProfilePage() {
 							whileHover={{ scale: 1.05, y: -4 }}
 							whileTap={{ scale: 0.98 }}
 							onClick={() => handleLinkClick(link._id, link.url)}
-							className="block w-full p-5 rounded-2xl border border-[var(--card-border)] transition-all group"
+							className="block w-full p-4 sm:p-5 rounded-2xl border border-[var(--card-border)] transition-all group touch-manipulation"
 							style={{
 								backgroundColor: buttonColor,
 								boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
@@ -308,11 +308,11 @@ export default function PublicProfilePage() {
 										<ExternalLink size={24} className="flex-shrink-0 text-white/70" />
 									)}
 									<div className="flex-1 min-w-0 text-left">
-										<p className="font-medium mb-0.5 truncate text-white">
+										<p className="text-sm sm:text-base font-medium mb-0.5 truncate text-white">
 											{link.title}
 										</p>
 										{link.description && (
-											<p className="text-sm text-white/70 truncate">
+											<p className="text-xs sm:text-sm text-white/70 truncate">
 												{link.description}
 											</p>
 										)}
