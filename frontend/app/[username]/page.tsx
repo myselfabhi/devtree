@@ -186,6 +186,18 @@ export default function PublicProfilePage() {
 				fontFamily: fontFamily,
 			}}
 		>
+			{/* Dark overlay for background images to ensure text readability */}
+			{profile.backgroundImage && (
+				<div 
+					className="absolute inset-0 bg-black/60 z-0"
+					style={{
+						backgroundColor: profile.colors?.overlay 
+							? `${profile.colors.overlay}80` 
+							: "rgba(0, 0, 0, 0.6)"
+					}}
+				/>
+			)}
+
 			{/* Animated background gradient */}
 			{!profile.backgroundImage && (
 				<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />

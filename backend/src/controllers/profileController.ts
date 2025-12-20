@@ -8,6 +8,8 @@ interface CreateProfileBody {
 	bio?: string;
 	avatar?: string;
 	font?: string;
+	backgroundImage?: string;
+	colors?: Record<string, unknown>;
 }
 
 interface UpdateProfileBody {
@@ -52,7 +54,7 @@ export const createProfile = async (
 			});
 		}
 
-		const { username, displayName, bio, avatar, font } = req.body;
+		const { username, displayName, bio, avatar, font, backgroundImage, colors } = req.body;
 
 		// Validation
 		if (!username || !displayName) {
@@ -99,6 +101,8 @@ export const createProfile = async (
 			bio: bio?.trim(),
 			avatar,
 			font: font?.trim() || undefined,
+			backgroundImage,
+			colors,
 		});
 
 		await profile.save();
