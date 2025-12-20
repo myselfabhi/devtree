@@ -8,25 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-	DndContext,
-	closestCenter,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	DragEndEvent,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
 	Link2,
-	GripVertical,
 	Pencil,
 	Trash2,
 	Plus,
@@ -61,8 +43,8 @@ interface Link {
 	clicks: number;
 }
 
-// Sortable Link Item Component
-function SortableLinkItem({
+// Link Item Component
+function LinkItem({
 	link,
 	onEdit,
 	onDelete,
@@ -73,41 +55,15 @@ function SortableLinkItem({
 	onDelete: (id: string) => void;
 	index: number;
 }) {
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({ id: link._id });
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-		opacity: isDragging ? 0.5 : 1,
-	};
-
 	return (
 		<motion.div
-			ref={setNodeRef}
-			style={style}
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: index * 0.05 }}
 			whileHover={{ scale: 1.02 }}
-			className="bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-xl p-4 cursor-grab active:cursor-grabbing"
+			className="bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-xl p-4 transition-all duration-200"
 		>
 			<div className="flex items-start gap-4">
-				{/* Drag Handle */}
-				<div
-					{...attributes}
-					{...listeners}
-					className="mt-2 text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors"
-				>
-					<GripVertical size={20} />
-				</div>
-
 				{/* Link Info */}
 				<div className="flex-1 min-w-0">
 					<div className="flex items-start justify-between gap-4 mb-2">
@@ -168,15 +124,6 @@ export default function LinksPage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingLink, setEditingLink] = useState<Link | null>(null);
 	const [error, setError] = useState<string>("");
-	const [isReordering, setIsReordering] = useState(false);
-
-	// Configure sensors for drag and drop
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		})
-	);
 
 	const {
 		register,
@@ -257,50 +204,6 @@ export default function LinksPage() {
 		}
 	};
 
-	const handleDragEnd = async (event: DragEndEvent) => {
-		const { active, over } = event;
-
-		if (!over || active.id === over.id) {
-			return;
-		}
-
-		const oldIndex = links.findIndex((link) => link._id === active.id);
-		const newIndex = links.findIndex((link) => link._id === over.id);
-
-		if (oldIndex === -1 || newIndex === -1) {
-			return;
-		}
-
-		// Optimistically update UI
-		const newLinks = arrayMove(links, oldIndex, newIndex);
-		setLinks(newLinks);
-		setIsReordering(true);
-
-		try {
-			// Extract link IDs in new order
-			const linkIds = newLinks.map((link) => link._id);
-			const response = await linkApi.reorder(
-				linkIds,
-				session!.accessToken as string
-			);
-
-			if (response.success) {
-				// Update with server response (includes updated order values)
-				setLinks(response.data.links);
-			} else {
-				// Revert on error
-				loadLinks();
-				setError("Failed to reorder links. Please try again.");
-			}
-		} catch (err: any) {
-			// Revert on error
-			loadLinks();
-			setError(err.message || "Failed to reorder links");
-		} finally {
-			setIsReordering(false);
-		}
-	};
-
 	if (status === "loading" || isLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
@@ -354,7 +257,7 @@ export default function LinksPage() {
 						Your Links
 					</h1>
 					<p className="text-[var(--text-secondary)]">
-						Drag to reorder • Click to edit • {links.length} active links
+						Click to edit • {links.length} active links
 					</p>
 				</motion.div>
 
@@ -378,12 +281,6 @@ export default function LinksPage() {
 				>
 					<Card>
 						<CardContent className="p-6">
-							{isReordering && (
-								<div className="mb-4 px-4 py-2 bg-[var(--accent-purple)]/10 border border-[var(--accent-purple)]/20 rounded-lg text-sm text-[var(--accent-purple)]">
-									Reordering links...
-								</div>
-							)}
-
 							{links.length === 0 ? (
 								<div className="text-center py-12">
 									<Link2
@@ -402,33 +299,16 @@ export default function LinksPage() {
 									</Button>
 								</div>
 							) : (
-								<DndContext
-									sensors={sensors}
-									collisionDetection={closestCenter}
-									onDragEnd={handleDragEnd}
-								>
-									<SortableContext
-										items={links.map((link) => link._id)}
-										strategy={verticalListSortingStrategy}
-									>
-										<div className="space-y-3">
-											{links.map((link, index) => (
-												<SortableLinkItem
-													key={link._id}
-													link={link}
-													onEdit={openEditModal}
-													onDelete={handleDelete}
-													index={index}
-												/>
-											))}
-										</div>
-									</SortableContext>
-								</DndContext>
-							)}
-
-							{links.length > 1 && (
-								<div className="mt-4 px-4 py-2 bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-lg text-xs text-[var(--text-secondary)]">
-									💡 Drag the handle (☰) to reorder your links
+								<div className="space-y-3">
+									{links.map((link, index) => (
+										<LinkItem
+											key={link._id}
+											link={link}
+											onEdit={openEditModal}
+											onDelete={handleDelete}
+											index={index}
+										/>
+									))}
 								</div>
 							)}
 						</CardContent>

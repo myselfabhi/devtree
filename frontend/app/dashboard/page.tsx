@@ -6,11 +6,19 @@ import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Link2, User, ExternalLink, ChartBar, Eye, MousePointer, LogOut } from "lucide-react";
+import { Link2, User, ExternalLink, ChartBar, Eye, MousePointer, LogOut, Sparkles } from "lucide-react";
 import { profileApi, linkApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import {
+	Modal,
+	ModalContent,
+	ModalHeader,
+	ModalTitle,
+	ModalDescription,
+	ModalFooter,
+} from "@/components/ui/modal";
 
 export default function DashboardPage() {
 	const { data: session, status } = useSession();
@@ -58,9 +66,9 @@ export default function DashboardPage() {
 
 	// Animate numbers on mount
 	useEffect(() => {
-		if (!isLoading && links.length > 0) {
+		if (!isLoading) {
 			const totalClicks = links.reduce((sum, link) => sum + (link.clicks || 0), 0);
-			const totalViews = totalClicks; // Using clicks as views for now
+			const totalViews = profile?.views || 0; // Use actual profile views
 			const linkCount = links.length;
 
 			const duration = 1000;
@@ -90,7 +98,7 @@ export default function DashboardPage() {
 
 			return () => clearInterval(timer);
 		}
-	}, [isLoading, links]);
+	}, [isLoading, links, profile]);
 
 	if (status === "loading" || isLoading) {
 		return (
@@ -103,6 +111,9 @@ export default function DashboardPage() {
 	if (!session) {
 		return null;
 	}
+
+	// Show onboarding modal if user has no profile
+	const showOnboarding = !isLoading && !profile;
 
 	const getPublicUrl = () => {
 		if (typeof window !== "undefined" && profile) {
@@ -118,6 +129,54 @@ export default function DashboardPage() {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)]">
+			{/* Onboarding Modal - Non-dismissible */}
+			<Modal open={showOnboarding} closable={false}>
+				<ModalContent>
+					<ModalHeader>
+						<div className="flex items-center gap-3">
+							<div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center">
+								<Sparkles className="text-white" size={24} />
+							</div>
+							<div>
+								<ModalTitle>Welcome to Linktree!</ModalTitle>
+								<ModalDescription>
+									Let's get you started by creating your profile
+								</ModalDescription>
+							</div>
+						</div>
+					</ModalHeader>
+					<div className="px-6 pb-6">
+						<p className="text-[var(--text-secondary)] mb-4">
+							To get started, you need to create your profile. This will allow you to:
+						</p>
+						<ul className="space-y-2 mb-6 text-[var(--text-secondary)]">
+							<li className="flex items-center gap-2">
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								Set up your unique username
+							</li>
+							<li className="flex items-center gap-2">
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								Customize your display name and bio
+							</li>
+							<li className="flex items-center gap-2">
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								Start sharing your links
+							</li>
+						</ul>
+					</div>
+					<ModalFooter>
+						<Link href="/dashboard/profile" className="w-full sm:w-auto">
+							<Button size="lg" className="w-full sm:w-auto">
+								Create Profile
+							</Button>
+						</Link>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+
+			{/* Blur/disable content behind modal */}
+			<div className={showOnboarding ? "blur-sm pointer-events-none select-none" : ""}>
+
 			{/* Navigation Bar */}
 			<motion.nav
 				initial={{ opacity: 0, y: -20 }}
@@ -226,9 +285,10 @@ export default function DashboardPage() {
 						initial={{ opacity: 0, x: -20 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ delay: 0.4 }}
+						className="flex"
 					>
-						<Card>
-							<CardContent className="p-6">
+						<Card className="flex flex-col w-full">
+							<CardContent className="p-6 flex flex-col flex-1">
 								<div className="flex items-start justify-between mb-6">
 								<div className="flex items-center gap-4">
 									<div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center">
@@ -245,50 +305,52 @@ export default function DashboardPage() {
 								</div>
 							</div>
 
-							{profile ? (
-								<div className="space-y-4">
-									<div>
-										<label className="text-sm text-[var(--text-secondary)]">
-											Display Name
-										</label>
-										<p className="text-[var(--text-primary)]">{profile.displayName}</p>
-									</div>
-									{profile.bio && (
-										<div>
-											<label className="text-sm text-[var(--text-secondary)]">Bio</label>
-											<p className="text-[var(--text-secondary)]">{profile.bio}</p>
-										</div>
-									)}
-									{publicUrl && (
+							<div className="flex-1 flex flex-col">
+								{profile ? (
+									<div className="space-y-4 flex-1">
 										<div>
 											<label className="text-sm text-[var(--text-secondary)]">
-												Public URL
+												Display Name
 											</label>
-											<div className="flex items-center gap-2 text-[var(--accent-purple)]">
-												<a
-													href={publicUrl}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="hover:underline"
-												>
-													{publicUrl}
-												</a>
-												<ExternalLink size={16} />
-											</div>
+											<p className="text-[var(--text-primary)]">{profile.displayName}</p>
 										</div>
-									)}
-								</div>
-							) : (
-								<p className="text-[var(--text-secondary)] mb-4">
-									Create your profile to get started
-								</p>
-							)}
+										{profile.bio && (
+											<div>
+												<label className="text-sm text-[var(--text-secondary)]">Bio</label>
+												<p className="text-[var(--text-secondary)]">{profile.bio}</p>
+											</div>
+										)}
+										{publicUrl && (
+											<div>
+												<label className="text-sm text-[var(--text-secondary)]">
+													Public URL
+												</label>
+												<div className="flex items-center gap-2 text-[var(--accent-purple)]">
+													<a
+														href={publicUrl}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="hover:underline"
+													>
+														{publicUrl}
+													</a>
+													<ExternalLink size={16} />
+												</div>
+											</div>
+										)}
+									</div>
+								) : (
+									<p className="text-[var(--text-secondary)] mb-4 flex-1">
+										Create your profile to get started
+									</p>
+								)}
 
-								<Link href="/dashboard/profile">
+								<Link href="/dashboard/profile" className="mt-auto">
 									<Button className="w-full mt-6" variant="outline">
 										{profile ? "Edit Profile" : "Create Profile"}
 									</Button>
 								</Link>
+							</div>
 							</CardContent>
 						</Card>
 					</motion.div>
@@ -298,9 +360,10 @@ export default function DashboardPage() {
 						initial={{ opacity: 0, x: 20 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ delay: 0.5 }}
+						className="flex"
 					>
-						<Card>
-							<CardContent className="p-6">
+						<Card className="flex flex-col w-full">
+							<CardContent className="p-6 flex flex-col flex-1">
 								<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl text-[var(--text-primary)] font-semibold">
 									Your Links
@@ -310,50 +373,54 @@ export default function DashboardPage() {
 								</span>
 							</div>
 
-							{links.length > 0 ? (
-								<div className="space-y-3">
-									<p className="text-sm text-[var(--text-secondary)] mb-4">
-										Top performing links
-									</p>
-									{topLinks.map((link, index) => (
-										<motion.div
-											key={link._id}
-											initial={{ opacity: 0, x: 20 }}
-											animate={{ opacity: 1, x: 0 }}
-											transition={{ delay: 0.6 + index * 0.1 }}
-											className="flex items-center justify-between p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--card-border)]"
-										>
-											<div className="flex-1 min-w-0">
-												<p className="truncate text-[var(--text-primary)]">
-													{link.title}
-												</p>
-												<p className="text-sm text-[var(--text-secondary)] truncate">
-													{link.url}
-												</p>
-											</div>
-											<div className="flex items-center gap-2 ml-4">
-												<ChartBar
-													size={16}
-													className="text-[var(--accent-purple)]"
-												/>
-												<span className="text-sm text-[var(--text-secondary)]">
-													{link.clicks || 0}
-												</span>
-											</div>
-										</motion.div>
-									))}
-								</div>
-							) : (
-								<div>
-									<p className="text-[var(--text-secondary)] mb-4">No links yet</p>
-								</div>
-							)}
+							<div className="flex-1 flex flex-col min-h-0">
+								{links.length > 0 ? (
+									<div className="flex-1 flex flex-col min-h-0">
+										<p className="text-sm text-[var(--text-secondary)] mb-4">
+											Top performing links
+										</p>
+										<div className="flex-1 overflow-y-auto max-h-[400px] pr-2 space-y-3 custom-scrollbar">
+											{topLinks.map((link, index) => (
+												<motion.div
+													key={link._id}
+													initial={{ opacity: 0, x: 20 }}
+													animate={{ opacity: 1, x: 0 }}
+													transition={{ delay: 0.6 + index * 0.1 }}
+													className="flex items-center justify-between p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--card-border)] flex-shrink-0"
+												>
+													<div className="flex-1 min-w-0">
+														<p className="truncate text-[var(--text-primary)]">
+															{link.title}
+														</p>
+														<p className="text-sm text-[var(--text-secondary)] truncate">
+															{link.url}
+														</p>
+													</div>
+													<div className="flex items-center gap-2 ml-4">
+														<ChartBar
+															size={16}
+															className="text-[var(--accent-purple)]"
+														/>
+														<span className="text-sm text-[var(--text-secondary)]">
+															{link.clicks || 0}
+														</span>
+													</div>
+												</motion.div>
+											))}
+										</div>
+									</div>
+								) : (
+									<div className="flex-1">
+										<p className="text-[var(--text-secondary)] mb-4">No links yet</p>
+									</div>
+								)}
 
-								<Link href="/dashboard/links">
+								<Link href="/dashboard/links" className="mt-auto">
 									<Button className="w-full mt-6">
 										Manage Links
 									</Button>
 								</Link>
+							</div>
 							</CardContent>
 						</Card>
 					</motion.div>
@@ -367,23 +434,26 @@ export default function DashboardPage() {
 						transition={{ delay: 0.8 }}
 						className="mt-6"
 					>
-						<Card>
-							<CardContent className="p-6">
-								<div className="flex items-center justify-between">
-								<div>
-									<h2 className="text-xl mb-2 text-[var(--text-primary)] font-semibold">
-										Performance Overview
-									</h2>
-									<p className="text-[var(--text-secondary)]">
-										Your links are performing great! Keep it up 🚀
-									</p>
-								</div>
-									<ChartBar size={48} className="text-[var(--accent-purple)]" />
-								</div>
-							</CardContent>
-						</Card>
+						<Link href="/dashboard/analytics">
+							<Card className="cursor-pointer hover:border-[var(--accent-purple)] transition-colors">
+								<CardContent className="p-6">
+									<div className="flex items-center justify-between">
+										<div>
+											<h2 className="text-xl mb-2 text-[var(--text-primary)] font-semibold">
+												Performance Overview
+											</h2>
+											<p className="text-[var(--text-secondary)]">
+												View detailed analytics and insights →
+											</p>
+										</div>
+										<ChartBar size={48} className="text-[var(--accent-purple)]" />
+									</div>
+								</CardContent>
+							</Card>
+						</Link>
 					</motion.div>
 				)}
+			</div>
 			</div>
 		</div>
 	);

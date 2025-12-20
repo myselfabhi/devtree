@@ -5,6 +5,7 @@ import {
 	updateProfile,
 	getPublicProfile,
 	checkUsernameAvailability,
+	trackProfileView,
 } from "../controllers/profileController.js";
 import { authenticate } from "../middleware/auth.js";
 
@@ -19,6 +20,8 @@ router.get("/", authenticate, getProfile);
 router.put("/", authenticate, updateProfile);
 
 // Public routes with parameters (must come last to avoid catching protected routes)
+// More specific routes must come before less specific ones
+router.get("/track/:username", trackProfileView);
 router.get("/:username", getPublicProfile);
 
 export default router;

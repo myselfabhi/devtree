@@ -10,6 +10,7 @@ export interface IProfile extends Document {
 	colors?: Record<string, unknown>;
 	font?: string;
 	backgroundImage?: string;
+	views: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -52,6 +53,10 @@ const ProfileSchema: Schema = new Schema(
 		},
 		backgroundImage: {
 			type: String,
+		},
+		views: {
+			type: Number,
+			default: 0,
 		},
 	},
 	{

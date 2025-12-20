@@ -75,6 +75,11 @@ export default function PublicProfilePage() {
 				if (profileData.font) {
 					loadGoogleFont(profileData.font);
 				}
+
+				// Track profile view (fire and forget - don't wait for it)
+				profileApi.trackView(username).catch(err => {
+					console.error("Failed to track profile view:", err);
+				});
 			}
 
 			if (linksRes.success) {

@@ -17,10 +17,6 @@ interface UpdateLinkBody {
 	description?: string;
 }
 
-interface ReorderLinksBody {
-	linkIds: string[];
-}
-
 // URL validation
 const isValidUrl = (url: string): boolean => {
 	try {
@@ -272,91 +268,6 @@ export const deleteLink = async (req: Request<{ id: string }>, res: Response) =>
 		res.status(500).json({
 			success: false,
 			message: "Internal server error",
-		});
-	}
-};
-
-export const reorderLinks = async (
-	req: Request<{}, {}, ReorderLinksBody>,
-	res: Response
-) => {
-	try {
-		const userId = req.userId;
-		if (!userId) {
-			return res.status(401).json({
-				success: false,
-				message: "Unauthorized",
-			});
-		}
-
-		const { linkIds } = req.body;
-		console.log("Reorder request - linkIds:", linkIds);
-		console.log("Reorder request - userId:", userId);
-
-		if (!Array.isArray(linkIds) || linkIds.length === 0) {
-			return res.status(400).json({
-				success: false,
-				message: "linkIds must be a non-empty array",
-			});
-		}
-
-		// Get user's profile
-		const profile = await Profile.findOne({ userId });
-		if (!profile) {
-			console.log("Profile not found for userId:", userId);
-			return res.status(404).json({
-				success: false,
-				message: "Profile not found",
-			});
-		}
-
-		console.log("Profile found:", profile._id);
-
-		// Mongoose can handle string IDs in $in queries, but let's be explicit
-		// Verify all links belong to user's profile
-		const links = await Link.find({
-			_id: { $in: linkIds },
-			profileId: profile._id,
-		});
-
-		console.log("Found links:", links.length, "Expected:", linkIds.length);
-
-		if (links.length !== linkIds.length) {
-			return res.status(400).json({
-				success: false,
-				message: "Some links not found or don't belong to your profile",
-			});
-		}
-
-		// Update order for each link using bulkWrite for better performance
-		const bulkOps = linkIds.map((linkId, index) => ({
-			updateOne: {
-				filter: { _id: linkId, profileId: profile._id },
-				update: { $set: { order: index } },
-			},
-		}));
-
-		await Link.bulkWrite(bulkOps);
-
-		// Get updated links
-		const updatedLinks = await Link.find({
-			_id: { $in: linkIds },
-			profileId: profile._id,
-		}).sort({ order: 1 });
-
-		console.log("Reorder successful");
-
-		res.status(200).json({
-			success: true,
-			message: "Links reordered successfully",
-			data: { links: updatedLinks },
-		});
-	} catch (error: any) {
-		console.error("Reorder links error:", error);
-		console.error("Error stack:", error.stack);
-		res.status(500).json({
-			success: false,
-			message: error.message || "Internal server error",
 		});
 	}
 };

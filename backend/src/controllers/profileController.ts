@@ -133,7 +133,12 @@ export const getProfile = async (req: Request, res: Response) => {
 		// This prevents 404 errors in frontend for users who haven't created a profile yet
 		res.status(200).json({
 			success: true,
-			data: { profile: profile || null },
+			data: { 
+				profile: profile ? {
+					...profile.toObject(),
+					views: profile.views || 0,
+				} : null 
+			},
 		});
 	} catch (error) {
 		console.error("Get profile error:", error);
@@ -268,6 +273,7 @@ export const getPublicProfile = async (req: Request, res: Response) => {
 					colors: profile.colors,
 					font: profile.font,
 					backgroundImage: profile.backgroundImage,
+					views: profile.views || 0,
 					createdAt: profile.createdAt,
 				},
 			},
@@ -316,6 +322,48 @@ export const checkUsernameAvailability = async (req: Request, res: Response) => 
 		});
 	} catch (error) {
 		console.error("Check username availability error:", error);
+		res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
+};
+
+export const trackProfileView = async (req: Request, res: Response) => {
+	try {
+		const { username } = req.params;
+
+		if (!username) {
+			return res.status(400).json({
+				success: false,
+				message: "Username is required",
+			});
+		}
+
+		// Find profile by username and increment views
+		const profile = await Profile.findOne({
+			username: username.toLowerCase(),
+		});
+
+		if (!profile) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
+
+		// Increment view count
+		profile.views = (profile.views || 0) + 1;
+		await profile.save();
+
+		res.status(200).json({
+			success: true,
+			data: {
+				views: profile.views,
+			},
+		});
+	} catch (error) {
+		console.error("Track profile view error:", error);
 		res.status(500).json({
 			success: false,
 			message: "Internal server error",

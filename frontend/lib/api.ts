@@ -47,6 +47,9 @@ export const profileApi = {
 	getPublic: async (username: string) => {
 		return apiRequest(`/api/profile/${username}`, { method: "GET" });
 	},
+	trackView: async (username: string) => {
+		return apiRequest(`/api/profile/track/${username}`, { method: "GET" });
+	},
 };
 
 // Link API
@@ -62,9 +65,6 @@ export const linkApi = {
 	},
 	delete: async (id: string, token: string) => {
 		return apiRequest(`/api/links/${id}`, { method: "DELETE" }, token);
-	},
-	reorder: async (linkIds: string[], token: string) => {
-		return apiRequest("/api/links/reorder", { method: "PUT", body: JSON.stringify({ linkIds }) }, token);
 	},
 	getPublic: async (username: string) => {
 		return apiRequest(`/api/links/public/${username}`, { method: "GET" });
