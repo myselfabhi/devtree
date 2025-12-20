@@ -33,7 +33,7 @@ export const profileApi = {
 	get: async (token: string) => {
 		return apiRequest("/api/profile", { method: "GET" }, token);
 	},
-	create: async (data: { username: string; displayName: string; bio?: string; font?: string }, token: string) => {
+	create: async (data: { username: string; displayName: string; bio?: string; font?: string; avatar?: string }, token: string) => {
 		return apiRequest("/api/profile", { method: "POST", body: JSON.stringify(data) }, token);
 	},
 	update: async (data: Partial<{ username: string; displayName: string; bio?: string; avatar?: string; font?: string }>, token: string) => {

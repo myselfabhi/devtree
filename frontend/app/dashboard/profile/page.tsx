@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { AvatarUpload } from "@/components/ui/avatar-upload";
 
 const profileSchema = z.object({
 	username: z
@@ -27,6 +28,7 @@ const profileSchema = z.object({
 	displayName: z.string().min(2, "Display name must be at least 2 characters"),
 	bio: z.string().optional(),
 	font: z.string().optional(),
+	avatar: z.string().optional(),
 });
 
 // Popular Google Fonts for link pages
@@ -55,6 +57,7 @@ export default function ProfilePage() {
 	const [error, setError] = useState<string>("");
 	const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
 	const [profile, setProfile] = useState<any>(null);
+	const [avatarPreview, setAvatarPreview] = useState<string>("");
 
 	const {
 		register,
@@ -96,6 +99,8 @@ export default function ProfilePage() {
 				setValue("displayName", response.data.profile.displayName);
 				setValue("bio", response.data.profile.bio || "");
 				setValue("font", response.data.profile.font || "");
+				setValue("avatar", response.data.profile.avatar || "");
+				setAvatarPreview(response.data.profile.avatar || "");
 			}
 		} catch (err: any) {
 			if (err.message.includes("not found")) {
@@ -231,6 +236,14 @@ export default function ProfilePage() {
 								label="Display Name"
 								placeholder="John Doe"
 								error={errors.displayName?.message}
+							/>
+
+							<AvatarUpload
+								value={avatarPreview}
+								onChange={(value) => {
+									setAvatarPreview(value);
+									setValue("avatar", value);
+								}}
 							/>
 
 							<Textarea

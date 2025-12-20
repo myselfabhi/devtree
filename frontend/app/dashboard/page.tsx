@@ -291,8 +291,16 @@ export default function DashboardPage() {
 							<CardContent className="p-6 flex flex-col flex-1">
 								<div className="flex items-start justify-between mb-6">
 								<div className="flex items-center gap-4">
-									<div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center">
-										<User size={32} className="text-white" />
+									<div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center overflow-hidden">
+										{profile?.avatar ? (
+											<img
+												src={profile.avatar}
+												alt={profile.displayName}
+												className="w-full h-full object-cover"
+											/>
+										) : (
+											<User size={32} className="text-white" />
+										)}
 									</div>
 									<div>
 										<h2 className="text-xl mb-1 text-[var(--text-primary)] font-semibold">

@@ -210,15 +210,13 @@ export default function PublicProfilePage() {
 						initial={{ scale: 0 }}
 						animate={{ scale: 1 }}
 						transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-						className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl"
+						className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl overflow-hidden"
 					>
 						{profile.avatar ? (
-							<Image
+							<img
 								src={profile.avatar}
 								alt={profile.displayName}
-								width={128}
-								height={128}
-								className="rounded-full"
+								className="w-full h-full object-cover"
 							/>
 						) : (
 							<span className="text-4xl text-white">
