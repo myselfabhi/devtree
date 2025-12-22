@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import profileRoutes from "./routes/profile.js";
 import linkRoutes from "./routes/link.js";
+import uploadRoutes from "./routes/upload.js";
 
 dotenv.config();
 
@@ -34,6 +35,9 @@ app.use("/api/profile", profileRoutes);
 
 // Link routes
 app.use("/api/links", linkRoutes);
+
+// Upload routes
+app.use("/api/upload", uploadRoutes);
 
 // Connect to MongoDB and start server
 connectDB()

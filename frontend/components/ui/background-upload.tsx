@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "./utils";
+import { uploadApi } from "@/lib/api";
 
 interface BackgroundUploadProps {
 	value?: string;
@@ -13,15 +15,17 @@ interface BackgroundUploadProps {
 }
 
 export function BackgroundUpload({ value, onChange, className }: BackgroundUploadProps) {
+	const { data: session } = useSession();
 	const [preview, setPreview] = useState<string | null>(value || null);
 	const [isDragging, setIsDragging] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		setPreview(value || null);
 	}, [value]);
 
-	const handleFileSelect = (file: File) => {
+	const handleFileSelect = async (file: File) => {
 		if (!file.type.startsWith("image/")) {
 			alert("Please select an image file");
 			return;
@@ -33,13 +37,36 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 			return;
 		}
 
+		// Show local preview immediately
 		const reader = new FileReader();
 		reader.onloadend = () => {
-			const base64String = reader.result as string;
-			setPreview(base64String);
-			onChange(base64String);
+			setPreview(reader.result as string);
 		};
 		reader.readAsDataURL(file);
+
+		// Upload to R2
+		if (!session?.accessToken) {
+			alert("Please log in to upload images");
+			return;
+		}
+
+		setIsUploading(true);
+		try {
+			const response = await uploadApi.upload(file, "background", session.accessToken as string);
+			if (response.success && response.data.url) {
+				const imageUrl = response.data.url;
+				setPreview(imageUrl);
+				onChange(imageUrl);
+			} else {
+				throw new Error("Upload failed");
+			}
+		} catch (error: any) {
+			console.error("Upload error:", error);
+			alert(error.message || "Failed to upload image. Please try again.");
+			setPreview(value || null); // Revert to previous value
+		} finally {
+			setIsUploading(false);
+		}
 	};
 
 	const handleDrop = (e: React.DragEvent) => {
@@ -97,33 +124,41 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 				{preview ? (
 					<div className="relative group">
 						<div className="relative w-full h-48 overflow-hidden rounded-lg">
-							<img
-								src={preview}
-								alt="Background preview"
-								className="w-full h-full object-cover"
-							/>
-							<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									onClick={() => fileInputRef.current?.click()}
-									className="bg-white/10 hover:bg-white/20 border-white/30 text-white"
-								>
-									<Upload size={16} className="mr-2" />
-									Change
-								</Button>
-								<Button
-									type="button"
-									variant="destructive"
-									size="sm"
-									onClick={handleRemove}
-									className="bg-red-500/80 hover:bg-red-600/80"
-								>
-									<X size={16} className="mr-2" />
-									Remove
-								</Button>
-							</div>
+							{isUploading ? (
+								<div className="w-full h-full flex items-center justify-center bg-[var(--bg-secondary)]">
+									<Loader2 className="animate-spin text-[var(--accent-purple)]" size={32} />
+								</div>
+							) : (
+								<img
+									src={preview}
+									alt="Background preview"
+									className="w-full h-full object-cover"
+								/>
+							)}
+							{!isUploading && (
+								<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() => fileInputRef.current?.click()}
+										className="bg-white/10 hover:bg-white/20 border-white/30 text-white"
+									>
+										<Upload size={16} className="mr-2" />
+										Change
+									</Button>
+									<Button
+										type="button"
+										variant="destructive"
+										size="sm"
+										onClick={handleRemove}
+										className="bg-red-500/80 hover:bg-red-600/80"
+									>
+										<X size={16} className="mr-2" />
+										Remove
+									</Button>
+								</div>
+							)}
 						</div>
 					</div>
 				) : (
@@ -144,9 +179,19 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 								size="sm"
 								onClick={() => fileInputRef.current?.click()}
 								className="mt-2"
+								disabled={isUploading}
 							>
-								<Upload size={16} className="mr-2" />
-								Choose File
+								{isUploading ? (
+									<>
+										<Loader2 size={16} className="mr-2 animate-spin" />
+										Uploading...
+									</>
+								) : (
+									<>
+										<Upload size={16} className="mr-2" />
+										Choose File
+									</>
+								)}
 							</Button>
 						</div>
 					</div>
@@ -163,4 +208,6 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 		</div>
 	);
 }
+
+
 

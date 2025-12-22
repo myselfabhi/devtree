@@ -74,5 +74,40 @@ export const linkApi = {
 	},
 };
 
+// Upload API
+export const uploadApi = {
+	upload: async (file: File, type: "avatar" | "background", token: string) => {
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const response = await fetch(`${BACKEND_URL}/api/upload?type=${type}`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			body: formData,
+		});
+
+		const data = await response.json();
+
+		if (!response.ok) {
+			throw new Error(data.message || "Upload failed");
+		}
+
+		return data;
+	},
+
+	delete: async (url: string, token: string) => {
+		return apiRequest(
+			"/api/upload",
+			{
+				method: "DELETE",
+				body: JSON.stringify({ url }),
+			},
+			token
+		);
+	},
+};
+
 
 
