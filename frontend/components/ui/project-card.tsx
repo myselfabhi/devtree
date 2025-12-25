@@ -10,6 +10,7 @@ interface ProjectCardProps {
 	role?: "Frontend" | "Backend" | "Full Stack";
 	githubUrl?: string;
 	url?: string;
+	screenshotUrl?: string;
 	onClick?: () => void;
 	index: number;
 }
@@ -21,6 +22,7 @@ export function ProjectCard({
 	role,
 	githubUrl,
 	url,
+	screenshotUrl,
 	onClick,
 	index,
 }: ProjectCardProps) {
@@ -41,9 +43,19 @@ export function ProjectCard({
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: 0.6 + index * 0.1 }}
 			whileHover={{ scale: 1.02, y: -4 }}
-			className="group relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-all"
+			className="group relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
 		>
-			<div className="flex items-start justify-between gap-4 mb-4">
+			{screenshotUrl && (
+				<div className="w-full h-48 bg-[var(--bg-secondary)] overflow-hidden">
+					<img
+						src={screenshotUrl}
+						alt={`${title} preview`}
+						className="w-full h-full object-cover object-top"
+					/>
+				</div>
+			)}
+			<div className="p-5 sm:p-6">
+				<div className="flex items-start justify-between gap-4 mb-4">
 				<div className="flex-1 min-w-0">
 					<h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[var(--accent-purple)] transition-colors">
 						{title}
@@ -125,6 +137,7 @@ export function ProjectCard({
 						</span>
 					) : null}
 				</div>
+			</div>
 			</div>
 		</motion.div>
 	);

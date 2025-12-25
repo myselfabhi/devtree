@@ -43,7 +43,7 @@ export async function uploadToR2(
 	fileBuffer: Buffer,
 	fileName: string,
 	contentType: string,
-	folder: "avatars" | "backgrounds" = "avatars"
+	folder: "avatars" | "backgrounds" | "screenshots" = "avatars"
 ): Promise<string> {
 	try {
 		const config = getR2Config();

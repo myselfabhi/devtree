@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Link from "../models/Link.js";
 import Profile from "../models/Profile.js";
 import { validateUrl } from "../services/urlValidationService.js";
+import { captureScreenshot } from "../services/screenshotService.js";
 
 interface CreateLinkBody {
 	title: string;
@@ -111,6 +112,15 @@ export const createLink = async (
 
 		await link.save();
 
+		if (url && url.trim()) {
+			captureScreenshot(url.trim())
+				.then((screenshotUrl) => {
+					Link.findByIdAndUpdate(link._id, { screenshotUrl })
+						.catch((err) => console.error("Failed to update screenshot URL:", err));
+				})
+				.catch((err) => console.error("Failed to capture screenshot:", err));
+		}
+
 		res.status(201).json({
 			success: true,
 			message: "Link created successfully",
@@ -205,14 +215,16 @@ export const updateLink = async (
 		if (title !== undefined) {
 			link.title = title.trim();
 		}
+		const urlChanged = url !== undefined && url.trim() !== link.url;
+		
 		if (url !== undefined) {
-			if (!isValidUrl(url)) {
+			if (url && !isValidUrl(url)) {
 				return res.status(400).json({
 					success: false,
 					message: "Invalid URL format. Must start with http:// or https://",
 				});
 			}
-			link.url = url.trim();
+			link.url = url?.trim();
 		}
 		if (description !== undefined) {
 			link.description = description.trim() || undefined;
@@ -245,7 +257,20 @@ export const updateLink = async (
 			link.githubUrl = githubUrl?.trim() || undefined;
 		}
 
+		if (urlChanged) {
+			link.screenshotUrl = undefined;
+		}
+
 		await link.save();
+
+		if (urlChanged && url && url.trim()) {
+			captureScreenshot(url.trim())
+				.then((screenshotUrl) => {
+					Link.findByIdAndUpdate(link._id, { screenshotUrl })
+						.catch((err) => console.error("Failed to update screenshot URL:", err));
+				})
+				.catch((err) => console.error("Failed to capture screenshot:", err));
+		}
 
 		res.status(200).json({
 			success: true,

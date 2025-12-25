@@ -12,6 +12,7 @@ export interface ILink extends Document {
 	githubUrl?: string;
 	status?: "live" | "down" | "slow" | "unknown";
 	lastCheckedAt?: Date;
+	screenshotUrl?: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -66,6 +67,10 @@ const LinkSchema: Schema = new Schema(
 		},
 		lastCheckedAt: {
 			type: Date,
+		},
+		screenshotUrl: {
+			type: String,
+			trim: true,
 		},
 	},
 	{

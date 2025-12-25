@@ -56,6 +56,7 @@ interface Link {
 	githubUrl?: string;
 	status?: "live" | "down" | "slow" | "unknown";
 	lastCheckedAt?: Date;
+	screenshotUrl?: string;
 	order: number;
 	clicks: number;
 }

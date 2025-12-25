@@ -47,6 +47,7 @@ interface Link {
 	githubUrl?: string;
 	status?: "live" | "down" | "slow" | "unknown";
 	lastCheckedAt?: Date;
+	screenshotUrl?: string;
 	order: number;
 }
 
@@ -281,6 +282,7 @@ export default function PublicProfilePage() {
 							role={link.role}
 							githubUrl={link.githubUrl}
 							url={link.url}
+							screenshotUrl={link.screenshotUrl}
 							onClick={() => handleLinkClick(link._id)}
 							index={index}
 						/>
