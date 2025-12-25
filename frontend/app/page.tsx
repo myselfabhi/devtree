@@ -9,9 +9,9 @@ export default function Home() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden">
 			{/* Animated gradient orbs */}
-			<div className="absolute top-0 left-0 w-96 h-96 bg-[var(--accent-primary)]/20 rounded-full filter blur-3xl animate-pulse" />
+			<div className="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-[var(--accent-primary)]/20 rounded-full filter blur-3xl animate-pulse" />
 			<div
-				className="absolute bottom-0 right-0 w-96 h-96 bg-green-900/20 rounded-full filter blur-3xl animate-pulse"
+				className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-green-900/20 rounded-full filter blur-3xl animate-pulse"
 				style={{ animationDelay: "1s" }}
 			/>
 
@@ -20,16 +20,16 @@ export default function Home() {
 				<motion.header
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
-					className="flex justify-between items-center mb-20"
+					className="flex justify-between items-center mb-12 sm:mb-16 md:mb-20 px-4"
 				>
 					<div className="flex items-center gap-2">
-						<Link2 className="text-[var(--accent-primary)]" size={32} />
-						<span className="text-2xl font-semibold text-[var(--text-primary)]">
+						<Link2 className="text-[var(--accent-primary)]" size={28} />
+						<span className="text-xl sm:text-2xl font-semibold text-[var(--text-primary)]">
 							DevTree
 						</span>
 					</div>
 					<Link href="/login">
-						<Button variant="outline">Sign In</Button>
+						<Button variant="outline" className="text-sm sm:text-base">Sign In</Button>
 					</Link>
 				</motion.header>
 
@@ -40,10 +40,10 @@ export default function Home() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.2 }}
 					>
-						<h1 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-[var(--text-primary)] to-[var(--accent-primary)] bg-clip-text text-transparent font-bold">
+						<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 bg-gradient-to-r from-[var(--text-primary)] to-[var(--accent-primary)] bg-clip-text text-transparent font-bold px-4">
 							Showcase Your Live Projects
 						</h1>
-						<p className="text-xl text-[var(--text-secondary)] mb-12 max-w-2xl mx-auto">
+						<p className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
 							Create a developer portfolio that showcases your deployed projects. Perfect for
 							recruiters to quickly evaluate your real work.
 						</p>

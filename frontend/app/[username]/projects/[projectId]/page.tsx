@@ -108,7 +108,7 @@ export default function ProjectDetailPage() {
 					</h1>
 					<button
 						onClick={() => router.push(`/${username}`)}
-						className="mt-4 px-4 py-2 rounded-lg bg-[var(--accent-purple)] text-white hover:bg-[var(--accent-purple-hover)] transition-colors"
+						className="mt-4 px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors"
 					>
 						Back to Profile
 					</button>
@@ -140,23 +140,23 @@ export default function ProjectDetailPage() {
 						initial={{ opacity: 0, x: -20 }}
 						animate={{ opacity: 1, x: 0 }}
 						onClick={() => router.push(`/${username}`)}
-						className="mb-6 flex items-center gap-2 text-[var(--text-primary)] hover:text-[var(--accent-purple)] transition-colors"
+						className="mb-4 sm:mb-6 flex items-center gap-2 text-[var(--text-primary)] hover:text-[var(--accent-primary)] transition-colors text-sm sm:text-base"
 					>
-						<ArrowLeft size={20} />
+						<ArrowLeft size={18} className="sm:size-5" />
 						<span>Back to Profile</span>
 					</motion.button>
 
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
-						className="bg-[var(--card-bg)]/90 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl"
+						className="bg-[var(--card-bg)]/90 backdrop-blur-2xl border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl"
 					>
-						<div className="flex items-start justify-between gap-4 mb-4">
-							<h1 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+						<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
+							<h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
 								{project.title}
 							</h1>
-							{project.status && (
-								<div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${
+							{project.status && project.status !== "unknown" && (
+								<div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 ${
 									project.status === "live" 
 										? "bg-green-500/20 text-green-400 border border-green-500/30"
 										: project.status === "slow"
@@ -172,7 +172,7 @@ export default function ProjectDetailPage() {
 						</div>
 
 						{project.description && (
-							<p className="text-lg text-[var(--text-secondary)] mb-6 leading-relaxed">
+							<p className="text-base sm:text-lg text-[var(--text-secondary)] mb-6 leading-relaxed">
 								{project.description}
 							</p>
 						)}
@@ -186,7 +186,7 @@ export default function ProjectDetailPage() {
 									{project.techStack.map((tech, idx) => (
 										<span
 											key={idx}
-											className="px-4 py-2 text-sm font-medium bg-[var(--accent-purple)]/20 text-[var(--accent-purple)] rounded-lg border border-[var(--accent-purple)]/30"
+											className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] rounded-lg border border-[var(--accent-primary)]/30"
 										>
 											{tech}
 										</span>
@@ -201,7 +201,7 @@ export default function ProjectDetailPage() {
 									<span className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide mr-3">
 										Role:
 									</span>
-									<span className="px-4 py-2 text-sm font-semibold rounded-lg border bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-indigo-500 border-indigo-500/30">
+									<span className="px-4 py-2 text-sm font-semibold rounded-lg border bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] border-[var(--accent-primary)]/30">
 										{project.role}
 									</span>
 								</div>
@@ -216,37 +216,37 @@ export default function ProjectDetailPage() {
 											<Zap size={16} />
 											Lighthouse Scores
 										</h3>
-										<div className="grid grid-cols-2 gap-3">
-											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-3">
+										<div className="grid grid-cols-2 gap-2 sm:gap-3">
+											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-2 sm:p-3">
 												<div className="text-xs text-[var(--text-secondary)] mb-1">Performance</div>
-												<div className={`text-2xl font-bold ${
+												<div className={`text-xl sm:text-2xl font-bold ${
 													project.lighthousePerformance >= 90 ? "text-green-400" :
 													project.lighthousePerformance >= 50 ? "text-yellow-400" : "text-red-400"
 												}`}>
 													{project.lighthousePerformance}
 												</div>
 											</div>
-											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-3">
+											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-2 sm:p-3">
 												<div className="text-xs text-[var(--text-secondary)] mb-1">Accessibility</div>
-												<div className={`text-2xl font-bold ${
+												<div className={`text-xl sm:text-2xl font-bold ${
 													(project.lighthouseAccessibility || 0) >= 90 ? "text-green-400" :
 													(project.lighthouseAccessibility || 0) >= 50 ? "text-yellow-400" : "text-red-400"
 												}`}>
 													{project.lighthouseAccessibility || "N/A"}
 												</div>
 											</div>
-											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-3">
+											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-2 sm:p-3">
 												<div className="text-xs text-[var(--text-secondary)] mb-1">Best Practices</div>
-												<div className={`text-2xl font-bold ${
+												<div className={`text-xl sm:text-2xl font-bold ${
 													(project.lighthouseBestPractices || 0) >= 90 ? "text-green-400" :
 													(project.lighthouseBestPractices || 0) >= 50 ? "text-yellow-400" : "text-red-400"
 												}`}>
 													{project.lighthouseBestPractices || "N/A"}
 												</div>
 											</div>
-											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-3">
+											<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-2 sm:p-3">
 												<div className="text-xs text-[var(--text-secondary)] mb-1">SEO</div>
-												<div className={`text-2xl font-bold ${
+												<div className={`text-xl sm:text-2xl font-bold ${
 													(project.lighthouseSEO || 0) >= 90 ? "text-green-400" :
 													(project.lighthouseSEO || 0) >= 50 ? "text-yellow-400" : "text-red-400"
 												}`}>
@@ -271,10 +271,10 @@ export default function ProjectDetailPage() {
 										<div className="space-y-3">
 											{project.githubStars !== undefined && (
 												<div className="bg-[var(--bg-secondary)]/50 rounded-lg p-3 flex items-center gap-3">
-													<Star size={20} className="text-yellow-400" />
-													<div>
+													<Star size={18} className="sm:size-5 text-yellow-400 flex-shrink-0" />
+													<div className="min-w-0">
 														<div className="text-xs text-[var(--text-secondary)]">Stars</div>
-														<div className="text-xl font-bold text-[var(--text-primary)]">
+														<div className="text-lg sm:text-xl font-bold text-[var(--text-primary)] truncate">
 															{project.githubStars.toLocaleString()}
 														</div>
 													</div>
@@ -302,17 +302,17 @@ export default function ProjectDetailPage() {
 							</div>
 						)}
 
-						<div className="flex flex-wrap items-center gap-4 pt-6 border-t border-[var(--card-border)]">
+						<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-6 border-t border-[var(--card-border)]">
 							{project.githubUrl && (
 								<a
 									href={project.githubUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--bg-secondary)] hover:bg-[var(--accent-purple)]/10 text-[var(--text-primary)] hover:text-[var(--accent-purple)] transition-colors border border-[var(--card-border)]"
+									className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg bg-[var(--bg-secondary)] hover:bg-[var(--accent-primary)]/10 text-[var(--text-primary)] hover:text-[var(--accent-primary)] transition-colors border border-[var(--card-border)] text-sm sm:text-base"
 								>
-									<Github size={20} />
+									<Github size={18} className="sm:size-5" />
 									<span className="font-medium">View on GitHub</span>
-									<ExternalLink size={16} />
+									<ExternalLink size={14} className="sm:size-4" />
 								</a>
 							)}
 							{project.url && (
@@ -321,11 +321,11 @@ export default function ProjectDetailPage() {
 									target="_blank"
 									rel="noopener noreferrer"
 									onClick={handleLinkClick}
-									className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--accent-purple)] hover:bg-[var(--accent-purple-hover)] text-white transition-colors font-medium"
+									className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white transition-colors font-medium text-sm sm:text-base"
 								>
-									<Globe size={20} />
+									<Globe size={18} className="sm:size-5" />
 									<span>Visit Project</span>
-									<ExternalLink size={16} />
+									<ExternalLink size={14} className="sm:size-4" />
 								</a>
 							)}
 						</div>

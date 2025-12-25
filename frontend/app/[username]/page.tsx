@@ -131,8 +131,8 @@ export default function PublicProfilePage() {
 	// Get colors from profile (with defaults - using dark theme)
 	const bgColor = (profile.colors as any)?.background || "var(--bg-primary)";
 	const textColor = (profile.colors as any)?.text || "var(--text-primary)";
-	const buttonColor = (profile.colors as any)?.button || "var(--accent-purple)";
-	const buttonHoverColor = (profile.colors as any)?.buttonHover || "var(--accent-purple-hover)";
+	const buttonColor = (profile.colors as any)?.button || "var(--accent-primary)";
+	const buttonHoverColor = (profile.colors as any)?.buttonHover || "var(--accent-hover)";
 	
 	// Get font from profile (with default)
 	const fontFamily = profile.font ? `"${profile.font}", sans-serif` : "inherit";
@@ -201,7 +201,7 @@ export default function PublicProfilePage() {
 
 			{/* Animated background gradient */}
 			{!profile.backgroundImage && (
-				<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
+				<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] bg-[var(--accent-primary)]/20 rounded-full filter blur-3xl animate-pulse" />
 			)}
 
 			<motion.div
@@ -209,7 +209,7 @@ export default function PublicProfilePage() {
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
 				transition={{ duration: 0.3 }}
-				className="relative z-10 container mx-auto px-4 sm:px-6 py-6 sm:py-12 max-w-2xl"
+				className="relative z-10 container mx-auto px-4 sm:px-6 py-4 sm:py-6 md:py-12 max-w-2xl"
 			>
 				{/* Profile Header */}
 				<motion.div
@@ -223,7 +223,7 @@ export default function PublicProfilePage() {
 						initial={{ scale: 0 }}
 						animate={{ scale: 1 }}
 						transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-						className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center shadow-xl overflow-hidden"
+						className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-green-700 flex items-center justify-center shadow-xl overflow-hidden"
 					>
 						{profile.avatar ? (
 							<img
@@ -232,7 +232,7 @@ export default function PublicProfilePage() {
 								className="w-full h-full object-cover"
 							/>
 						) : (
-							<span className="text-2xl sm:text-4xl text-white">
+							<span className="text-xl sm:text-2xl md:text-4xl text-white font-semibold">
 								{profile.displayName.charAt(0).toUpperCase()}
 							</span>
 						)}
@@ -243,7 +243,7 @@ export default function PublicProfilePage() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.3 }}
-						className="text-2xl sm:text-4xl mb-2 font-bold px-2"
+						className="text-2xl sm:text-3xl md:text-4xl mb-2 font-bold px-2 break-words"
 						style={{ color: textColor }}
 					>
 						{profile.displayName}
@@ -253,7 +253,7 @@ export default function PublicProfilePage() {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ delay: 0.4 }}
-						className="text-[var(--text-secondary)] mb-4"
+						className="text-sm sm:text-base text-[var(--text-secondary)] mb-4 px-2"
 					>
 						@{profile.username}
 					</motion.p>
@@ -264,7 +264,7 @@ export default function PublicProfilePage() {
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							transition={{ delay: 0.5 }}
-							className="text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed"
+							className="text-sm sm:text-base text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed px-4"
 						>
 							{profile.bio}
 						</motion.p>

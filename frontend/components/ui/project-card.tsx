@@ -28,22 +28,22 @@ export function ProjectCard({
 		>
 			<Link
 				href={`/${username}/projects/${projectId}`}
-				className="block w-full p-4 sm:p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] transition-all group hover:border-[var(--accent-purple)]/50 shadow-md hover:shadow-lg"
+				className="block w-full p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] transition-all group hover:border-[var(--accent-primary)]/50 shadow-md hover:shadow-lg"
 			>
-				<div className="flex items-center justify-between gap-4">
+				<div className="flex items-center justify-between gap-3 sm:gap-4">
 					<div className="flex-1 min-w-0">
-						<h3 className="text-base sm:text-lg font-semibold text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent-purple)] transition-colors truncate">
+						<h3 className="text-sm sm:text-base md:text-lg font-semibold text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent-primary)] transition-colors truncate">
 							{title}
 						</h3>
 						{description && (
-							<p className="text-sm text-[var(--text-secondary)] line-clamp-1">
+							<p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-1 sm:line-clamp-2">
 								{description}
 							</p>
 						)}
 					</div>
 					<ExternalLink
-						size={20}
-						className="flex-shrink-0 text-[var(--text-secondary)] group-hover:text-[var(--accent-purple)] transition-colors"
+						size={18}
+						className="sm:size-5 flex-shrink-0 text-[var(--text-secondary)] group-hover:text-[var(--accent-primary)] transition-colors"
 					/>
 				</div>
 			</Link>
