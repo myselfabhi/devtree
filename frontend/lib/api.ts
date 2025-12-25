@@ -66,6 +66,9 @@ export const linkApi = {
 	delete: async (id: string, token: string) => {
 		return apiRequest(`/api/links/${id}`, { method: "DELETE" }, token);
 	},
+	validate: async (id: string, token: string) => {
+		return apiRequest(`/api/links/${id}/validate`, { method: "POST" }, token);
+	},
 	getPublic: async (username: string) => {
 		return apiRequest(`/api/links/public/${username}`, { method: "GET" });
 	},

@@ -4,6 +4,7 @@ import {
 	getLinks,
 	updateLink,
 	deleteLink,
+	validateLink,
 	getPublicLinks,
 	trackLinkClick,
 } from "../controllers/linkController.js";
@@ -20,6 +21,7 @@ router.post("/", authenticate, createLink);
 router.get("/", authenticate, getLinks);
 router.put("/:id", authenticate, updateLink);
 router.delete("/:id", authenticate, deleteLink);
+router.post("/:id/validate", authenticate, validateLink);
 
 export default router;
 

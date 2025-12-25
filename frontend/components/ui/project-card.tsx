@@ -8,7 +8,6 @@ interface ProjectCardProps {
 	description?: string;
 	techStack?: string[];
 	role?: "Frontend" | "Backend" | "Full Stack";
-	status?: "live" | "down" | "slow" | "unknown";
 	githubUrl?: string;
 	url?: string;
 	onClick?: () => void;
@@ -20,38 +19,11 @@ export function ProjectCard({
 	description,
 	techStack = [],
 	role,
-	status = "unknown",
 	githubUrl,
 	url,
 	onClick,
 	index,
 }: ProjectCardProps) {
-	const getStatusColor = () => {
-		switch (status) {
-			case "live":
-				return "bg-green-500/20 text-green-500 border-green-500/30";
-			case "down":
-				return "bg-red-500/20 text-red-500 border-red-500/30";
-			case "slow":
-				return "bg-amber-500/20 text-amber-500 border-amber-500/30";
-			default:
-				return "bg-gray-500/20 text-gray-500 border-gray-500/30";
-		}
-	};
-
-	const getStatusText = () => {
-		switch (status) {
-			case "live":
-				return "Live";
-			case "down":
-				return "Down";
-			case "slow":
-				return "Slow";
-			default:
-				return "Unknown";
-		}
-	};
-
 	const getRoleColor = () => {
 		switch (role) {
 			case "Frontend":
@@ -117,11 +89,6 @@ export function ProjectCard({
 							{role}
 						</span>
 					)}
-					<span
-						className={`px-3 py-1 text-xs font-semibold rounded-md border ${getStatusColor()}`}
-					>
-						{getStatusText()}
-					</span>
 				</div>
 
 				<div className="flex items-center gap-2">

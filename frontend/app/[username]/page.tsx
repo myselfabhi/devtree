@@ -279,7 +279,6 @@ export default function PublicProfilePage() {
 							description={link.description}
 							techStack={link.techStack}
 							role={link.role}
-							status={link.status}
 							githubUrl={link.githubUrl}
 							url={link.url}
 							onClick={() => handleLinkClick(link._id)}

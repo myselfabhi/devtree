@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Link from "../models/Link.js";
 import Profile from "../models/Profile.js";
+import { validateUrl } from "../services/urlValidationService.js";
 
 interface CreateLinkBody {
 	title: string;
@@ -315,6 +316,73 @@ export const deleteLink = async (req: Request<{ id: string }>, res: Response) =>
 		res.status(500).json({
 			success: false,
 			message: "Internal server error",
+		});
+	}
+};
+
+export const validateLink = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	try {
+		const userId = req.userId;
+		if (!userId) {
+			return res.status(401).json({
+				success: false,
+				message: "Unauthorized",
+			});
+		}
+
+		const { id } = req.params;
+
+		const profile = await Profile.findOne({ userId });
+		if (!profile) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
+
+		const link = await Link.findOne({
+			_id: id,
+			profileId: profile._id,
+		});
+
+		if (!link) {
+			return res.status(404).json({
+				success: false,
+				message: "Link not found",
+			});
+		}
+
+		if (!link.url || !link.url.trim()) {
+			return res.status(400).json({
+				success: false,
+				message: "Link does not have a URL to validate",
+			});
+		}
+
+		const validationResult = await validateUrl(link.url);
+
+		link.status = validationResult.status;
+		link.lastCheckedAt = new Date();
+		await link.save();
+
+		res.json({
+			success: true,
+			message: "Link validated successfully",
+			data: {
+				status: link.status,
+				lastCheckedAt: link.lastCheckedAt,
+				responseTime: validationResult.responseTime,
+				statusCode: validationResult.statusCode,
+			},
+		});
+	} catch (error: any) {
+		console.error("Validate link error:", error);
+		res.status(500).json({
+			success: false,
+			message: error.message || "Failed to validate link",
 		});
 	}
 };
