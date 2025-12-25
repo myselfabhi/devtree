@@ -40,9 +40,13 @@ interface Profile {
 interface Link {
 	_id: string;
 	title: string;
-	url: string;
-	icon?: string;
+	url?: string;
 	description?: string;
+	techStack?: string[];
+	role?: "Frontend" | "Backend" | "Full Stack";
+	githubUrl?: string;
+	status?: "live" | "down" | "slow" | "unknown";
+	lastCheckedAt?: Date;
 	order: number;
 }
 
@@ -283,7 +287,7 @@ export default function PublicProfilePage() {
 							transition={{ delay: 0.6 + index * 0.1 }}
 							whileHover={{ scale: 1.05, y: -4 }}
 							whileTap={{ scale: 0.98 }}
-							onClick={() => handleLinkClick(link._id, link.url)}
+							onClick={() => link.url && handleLinkClick(link._id, link.url)}
 							className="block w-full p-4 sm:p-5 rounded-2xl border border-[var(--card-border)] transition-all group touch-manipulation"
 							style={{
 								backgroundColor: buttonColor,
@@ -298,15 +302,7 @@ export default function PublicProfilePage() {
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-4 flex-1 min-w-0">
-									{link.icon ? (
-										<img
-											src={link.icon}
-											alt=""
-											className="flex-shrink-0 w-6 h-6"
-										/>
-									) : (
-										<ExternalLink size={24} className="flex-shrink-0 text-white/70" />
-									)}
+									<ExternalLink size={24} className="flex-shrink-0 text-white/70" />
 									<div className="flex-1 min-w-0 text-left">
 										<p className="text-sm sm:text-base font-medium mb-0.5 truncate text-white">
 											{link.title}

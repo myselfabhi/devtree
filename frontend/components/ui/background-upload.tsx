@@ -3,10 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "./utils";
 import { uploadApi } from "@/lib/api";
+import {
+	Modal,
+	ModalContent,
+	ModalHeader,
+	ModalTitle,
+	ModalDescription,
+	ModalFooter,
+} from "./modal";
 
 interface BackgroundUploadProps {
 	value?: string;
@@ -20,6 +28,8 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 	const [isDragging, setIsDragging] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [showErrorModal, setShowErrorModal] = useState(false);
 
 	useEffect(() => {
 		setPreview(value || null);
@@ -27,26 +37,26 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 
 	const handleFileSelect = async (file: File) => {
 		if (!file.type.startsWith("image/")) {
-			alert("Please select an image file");
+			setErrorMessage("Please select an image file");
+			setShowErrorModal(true);
 			return;
 		}
 
-		// Check file size (max 5MB)
 		if (file.size > 5 * 1024 * 1024) {
-			alert("Image size must be less than 5MB");
+			setErrorMessage("Image size must be less than 5MB");
+			setShowErrorModal(true);
 			return;
 		}
 
-		// Show local preview immediately
 		const reader = new FileReader();
 		reader.onloadend = () => {
 			setPreview(reader.result as string);
 		};
 		reader.readAsDataURL(file);
 
-		// Upload to R2
 		if (!session?.accessToken) {
-			alert("Please log in to upload images");
+			setErrorMessage("Please log in to upload images");
+			setShowErrorModal(true);
 			return;
 		}
 
@@ -62,8 +72,9 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 			}
 		} catch (error: any) {
 			console.error("Upload error:", error);
-			alert(error.message || "Failed to upload image. Please try again.");
-			setPreview(value || null); // Revert to previous value
+			setErrorMessage(error.message || "Failed to upload image. Please try again.");
+			setShowErrorModal(true);
+			setPreview(value || null);
 		} finally {
 			setIsUploading(false);
 		}
@@ -205,6 +216,27 @@ export function BackgroundUpload({ value, onChange, className }: BackgroundUploa
 					className="hidden"
 				/>
 			</div>
+
+			<Modal open={showErrorModal} onOpenChange={setShowErrorModal}>
+				<ModalContent>
+					<ModalHeader>
+						<div className="flex items-center gap-3">
+							<AlertCircle className="w-6 h-6 text-red-500" />
+							<ModalTitle>Error</ModalTitle>
+						</div>
+					</ModalHeader>
+					<div className="px-6 pb-6 pt-2">
+						<p className="text-base text-[var(--text-primary)]">
+							{errorMessage}
+						</p>
+					</div>
+					<ModalFooter>
+						<Button onClick={() => setShowErrorModal(false)}>
+							OK
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</div>
 	);
 }

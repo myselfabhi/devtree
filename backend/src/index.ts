@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.js";
 import profileRoutes from "./routes/profile.js";
 import linkRoutes from "./routes/link.js";
 import uploadRoutes from "./routes/upload.js";
+import githubRoutes from "./routes/github.js";
 
 dotenv.config();
 
@@ -29,6 +30,9 @@ app.get("/api", (req, res) => {
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
+
+// GitHub routes
+app.use("/api/github", githubRoutes);
 
 // Profile routes
 app.use("/api/profile", profileRoutes);

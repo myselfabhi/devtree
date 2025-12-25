@@ -31,9 +31,6 @@ interface ModalFooterProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Modal = ({ open, onOpenChange, children, closable = true }: ModalProps) => {
-	if (!open) return null;
-
-	// Prevent body scroll when modal is open
 	React.useEffect(() => {
 		if (open) {
 			document.body.style.overflow = "hidden";
@@ -44,6 +41,8 @@ const Modal = ({ open, onOpenChange, children, closable = true }: ModalProps) =>
 			document.body.style.overflow = "";
 		};
 	}, [open]);
+
+	if (!open) return null;
 
 	return (
 		<div

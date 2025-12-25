@@ -3,11 +3,15 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ILink extends Document {
 	profileId: mongoose.Types.ObjectId;
 	title: string;
-	url: string;
-	icon?: string;
+	url?: string;
 	description?: string;
 	order: number;
 	clicks: number;
+	techStack?: string[];
+	role?: "Frontend" | "Backend" | "Full Stack";
+	githubUrl?: string;
+	status?: "live" | "down" | "slow" | "unknown";
+	lastCheckedAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -26,11 +30,8 @@ const LinkSchema: Schema = new Schema(
 		},
 		url: {
 			type: String,
-			required: true,
+			required: false,
 			trim: true,
-		},
-		icon: {
-			type: String,
 		},
 		description: {
 			type: String,
@@ -44,6 +45,27 @@ const LinkSchema: Schema = new Schema(
 		clicks: {
 			type: Number,
 			default: 0,
+		},
+		techStack: {
+			type: [String],
+			default: [],
+		},
+		role: {
+			type: String,
+			enum: ["Frontend", "Backend", "Full Stack"],
+			default: "Full Stack",
+		},
+		githubUrl: {
+			type: String,
+			trim: true,
+		},
+		status: {
+			type: String,
+			enum: ["live", "down", "slow", "unknown"],
+			default: "unknown",
+		},
+		lastCheckedAt: {
+			type: Date,
 		},
 	},
 	{

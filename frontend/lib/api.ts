@@ -57,10 +57,10 @@ export const linkApi = {
 	getAll: async (token: string) => {
 		return apiRequest("/api/links", { method: "GET" }, token);
 	},
-	create: async (data: { title: string; url: string; icon?: string; description?: string }, token: string) => {
+	create: async (data: { title: string; url?: string; description?: string; techStack?: string[]; role?: "Frontend" | "Backend" | "Full Stack"; githubUrl?: string }, token: string) => {
 		return apiRequest("/api/links", { method: "POST", body: JSON.stringify(data) }, token);
 	},
-	update: async (id: string, data: Partial<{ title: string; url: string; icon?: string; description?: string }>, token: string) => {
+	update: async (id: string, data: Partial<{ title: string; url: string; description?: string; techStack?: string[]; role?: "Frontend" | "Backend" | "Full Stack"; githubUrl?: string }>, token: string) => {
 		return apiRequest(`/api/links/${id}`, { method: "PUT", body: JSON.stringify(data) }, token);
 	},
 	delete: async (id: string, token: string) => {
@@ -71,6 +71,20 @@ export const linkApi = {
 	},
 	track: async (id: string) => {
 		return apiRequest(`/api/links/track/${id}`, { method: "GET" });
+	},
+};
+
+// GitHub API
+export const githubApi = {
+	fetch: async (githubUrl: string, token: string) => {
+		return apiRequest(
+			"/api/github/fetch",
+			{
+				method: "POST",
+				body: JSON.stringify({ githubUrl }),
+			},
+			token
+		);
 	},
 };
 

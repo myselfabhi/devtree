@@ -57,3 +57,7 @@ temp/
 # Misc
 .cache/
 
+# Documentation files (keep README.md)
+*.md
+!README.md
+

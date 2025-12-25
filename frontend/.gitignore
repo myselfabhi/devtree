@@ -55,3 +55,7 @@ Thumbs.db
 .cache/
 .parcel-cache/
 .turbo/
+
+# Documentation files (keep README.md)
+*.md
+!README.md

@@ -5,19 +5,22 @@ import Profile from "../models/Profile.js";
 
 interface CreateLinkBody {
 	title: string;
-	url: string;
-	icon?: string;
+	url?: string;
 	description?: string;
+	techStack?: string[];
+	role?: "Frontend" | "Backend" | "Full Stack";
+	githubUrl?: string;
 }
 
 interface UpdateLinkBody {
 	title?: string;
 	url?: string;
-	icon?: string;
 	description?: string;
+	techStack?: string[];
+	role?: "Frontend" | "Backend" | "Full Stack";
+	githubUrl?: string;
 }
 
-// URL validation
 const isValidUrl = (url: string): boolean => {
 	try {
 		const urlObj = new URL(url);
@@ -40,21 +43,40 @@ export const createLink = async (
 			});
 		}
 
-		const { title, url, icon, description } = req.body;
+		const { title, url, description, techStack, role, githubUrl } = req.body;
 
-		// Validation
-		if (!title || !url) {
+		if (!title) {
 			return res.status(400).json({
 				success: false,
-				message: "Title and URL are required",
+				message: "Title is required",
 			});
 		}
-
-		// Validate URL format
-		if (!isValidUrl(url)) {
+		
+		if (url && !isValidUrl(url)) {
 			return res.status(400).json({
 				success: false,
 				message: "Invalid URL format. Must start with http:// or https://",
+			});
+		}
+
+		if (techStack && !Array.isArray(techStack)) {
+			return res.status(400).json({
+				success: false,
+				message: "techStack must be an array",
+			});
+		}
+
+		if (role && !["Frontend", "Backend", "Full Stack"].includes(role)) {
+			return res.status(400).json({
+				success: false,
+				message: "role must be one of: Frontend, Backend, Full Stack",
+			});
+		}
+
+		if (githubUrl && !isValidUrl(githubUrl)) {
+			return res.status(400).json({
+				success: false,
+				message: "Invalid GitHub URL format. Must start with http:// or https://",
 			});
 		}
 
@@ -67,20 +89,21 @@ export const createLink = async (
 			});
 		}
 
-		// Get current max order for this profile
 		const maxOrderLink = await Link.findOne({ profileId: profile._id })
 			.sort({ order: -1 })
 			.limit(1);
 
 		const nextOrder = maxOrderLink ? maxOrderLink.order + 1 : 0;
 
-		// Create link
 		const link = new Link({
 			profileId: profile._id,
 			title: title.trim(),
-			url: url.trim(),
-			icon: icon?.trim(),
+			url: url?.trim(),
 			description: description?.trim(),
+			techStack: techStack?.map((tech) => tech.trim()).filter(Boolean) || [],
+			role: role || "Full Stack",
+			githubUrl: githubUrl?.trim(),
+			status: "unknown",
 			order: nextOrder,
 			clicks: 0,
 		});
@@ -153,7 +176,7 @@ export const updateLink = async (
 		}
 
 		const { id } = req.params;
-		const { title, url, icon, description } = req.body;
+		const { title, url, description, techStack, role, githubUrl } = req.body;
 
 		// Get user's profile
 		const profile = await Profile.findOne({ userId });
@@ -190,11 +213,35 @@ export const updateLink = async (
 			}
 			link.url = url.trim();
 		}
-		if (icon !== undefined) {
-			link.icon = icon.trim() || undefined;
-		}
 		if (description !== undefined) {
 			link.description = description.trim() || undefined;
+		}
+		if (techStack !== undefined) {
+			if (!Array.isArray(techStack)) {
+				return res.status(400).json({
+					success: false,
+					message: "techStack must be an array",
+				});
+			}
+			link.techStack = techStack.map((tech) => tech.trim()).filter(Boolean);
+		}
+		if (role !== undefined) {
+			if (!["Frontend", "Backend", "Full Stack"].includes(role)) {
+				return res.status(400).json({
+					success: false,
+					message: "role must be one of: Frontend, Backend, Full Stack",
+				});
+			}
+			link.role = role;
+		}
+		if (githubUrl !== undefined) {
+			if (githubUrl && !isValidUrl(githubUrl)) {
+				return res.status(400).json({
+					success: false,
+					message: "Invalid GitHub URL format. Must start with http:// or https://",
+				});
+			}
+			link.githubUrl = githubUrl?.trim() || undefined;
 		}
 
 		await link.save();
