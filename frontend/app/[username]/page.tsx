@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink } from "lucide-react";
 import { profileApi, linkApi } from "@/lib/api";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { ProjectCard } from "@/components/ui/project-card";
 
 // Helper function to load Google Font
 function loadGoogleFont(fontName: string) {
@@ -96,16 +96,12 @@ export default function PublicProfilePage() {
 		}
 	};
 
-	const handleLinkClick = async (linkId: string, url: string) => {
+	const handleLinkClick = async (linkId: string) => {
 		try {
-			// Track click
 			await linkApi.track(linkId);
 		} catch (err) {
 			console.error("Failed to track click:", err);
 		}
-
-		// Open link in new tab
-		window.open(url, "_blank", "noopener,noreferrer");
 	};
 
 	if (isLoading) {
@@ -274,52 +270,21 @@ export default function PublicProfilePage() {
 					)}
 				</motion.div>
 
-				{/* Links */}
-				<div className="space-y-3 sm:space-y-4">
+				{/* Project Cards */}
+				<div className="space-y-4">
 					{links.map((link, index) => (
-						<motion.a
+						<ProjectCard
 							key={link._id}
-							href={link.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.6 + index * 0.1 }}
-							whileHover={{ scale: 1.05, y: -4 }}
-							whileTap={{ scale: 0.98 }}
-							onClick={() => link.url && handleLinkClick(link._id, link.url)}
-							className="block w-full p-4 sm:p-5 rounded-2xl border border-[var(--card-border)] transition-all group touch-manipulation"
-							style={{
-								backgroundColor: buttonColor,
-								boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.backgroundColor = buttonHoverColor;
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.backgroundColor = buttonColor;
-							}}
-						>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-4 flex-1 min-w-0">
-									<ExternalLink size={24} className="flex-shrink-0 text-white/70" />
-									<div className="flex-1 min-w-0 text-left">
-										<p className="text-sm sm:text-base font-medium mb-0.5 truncate text-white">
-											{link.title}
-										</p>
-										{link.description && (
-											<p className="text-xs sm:text-sm text-white/70 truncate">
-												{link.description}
-											</p>
-										)}
-									</div>
-								</div>
-								<ExternalLink
-									size={20}
-									className="flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity text-white"
-								/>
-							</div>
-						</motion.a>
+							title={link.title}
+							description={link.description}
+							techStack={link.techStack}
+							role={link.role}
+							status={link.status}
+							githubUrl={link.githubUrl}
+							url={link.url}
+							onClick={() => handleLinkClick(link._id)}
+							index={index}
+						/>
 					))}
 				</div>
 
@@ -330,7 +295,7 @@ export default function PublicProfilePage() {
 						transition={{ delay: 0.8 }}
 						className="text-center mt-16"
 					>
-						<p className="text-[var(--text-secondary)]">No links available yet.</p>
+						<p className="text-[var(--text-secondary)]">No projects available yet.</p>
 					</motion.div>
 				)}
 			</motion.div>
