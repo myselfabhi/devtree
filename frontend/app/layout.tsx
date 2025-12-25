@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Linktree Clone",
-	description: "Create your custom link page",
+	title: "DevTree",
+	description: "Showcase your live projects in one beautiful portfolio",
 };
 
 export const viewport = {

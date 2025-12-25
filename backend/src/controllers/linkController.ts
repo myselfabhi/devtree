@@ -4,6 +4,8 @@ import Link from "../models/Link.js";
 import Profile from "../models/Profile.js";
 import { validateUrl } from "../services/urlValidationService.js";
 import { captureScreenshot } from "../services/screenshotService.js";
+import { fetchGitHubMetrics } from "../services/githubMetricsService.js";
+import { runLighthouseAudit } from "../services/lighthouseService.js";
 
 interface CreateLinkBody {
 	title: string;
@@ -113,12 +115,42 @@ export const createLink = async (
 		await link.save();
 
 		if (url && url.trim()) {
-			captureScreenshot(url.trim())
+			const urlToProcess = url.trim();
+			
+			captureScreenshot(urlToProcess)
 				.then((screenshotUrl) => {
 					Link.findByIdAndUpdate(link._id, { screenshotUrl })
 						.catch((err) => console.error("Failed to update screenshot URL:", err));
 				})
 				.catch((err) => console.error("Failed to capture screenshot:", err));
+
+			runLighthouseAudit(urlToProcess)
+				.then((scores) => {
+					if (scores) {
+						Link.findByIdAndUpdate(link._id, {
+							lighthousePerformance: scores.performance,
+							lighthouseAccessibility: scores.accessibility,
+							lighthouseBestPractices: scores.bestPractices,
+							lighthouseSEO: scores.seo,
+							lighthouseLastRun: new Date(),
+						}).catch((err) => console.error("Failed to update Lighthouse scores:", err));
+					}
+				})
+				.catch((err) => console.error("Failed to run Lighthouse audit:", err));
+		}
+
+		if (githubUrl && githubUrl.trim()) {
+			fetchGitHubMetrics(githubUrl.trim())
+				.then((metrics) => {
+					if (metrics) {
+						Link.findByIdAndUpdate(link._id, {
+							githubStars: metrics.stars,
+							lastCommitDate: metrics.lastCommitDate,
+							lastCommitMessage: metrics.lastCommitMessage,
+						}).catch((err) => console.error("Failed to update GitHub metrics:", err));
+					}
+				})
+				.catch((err) => console.error("Failed to fetch GitHub metrics:", err));
 		}
 
 		res.status(201).json({
@@ -264,12 +296,44 @@ export const updateLink = async (
 		await link.save();
 
 		if (urlChanged && url && url.trim()) {
-			captureScreenshot(url.trim())
+			const urlToProcess = url.trim();
+			
+			captureScreenshot(urlToProcess)
 				.then((screenshotUrl) => {
 					Link.findByIdAndUpdate(link._id, { screenshotUrl })
 						.catch((err) => console.error("Failed to update screenshot URL:", err));
 				})
 				.catch((err) => console.error("Failed to capture screenshot:", err));
+
+			runLighthouseAudit(urlToProcess)
+				.then((scores) => {
+					if (scores) {
+						Link.findByIdAndUpdate(link._id, {
+							lighthousePerformance: scores.performance,
+							lighthouseAccessibility: scores.accessibility,
+							lighthouseBestPractices: scores.bestPractices,
+							lighthouseSEO: scores.seo,
+							lighthouseLastRun: new Date(),
+						}).catch((err) => console.error("Failed to update Lighthouse scores:", err));
+					}
+				})
+				.catch((err) => console.error("Failed to run Lighthouse audit:", err));
+		}
+
+		const githubUrlChanged = githubUrl !== undefined && githubUrl?.trim() !== link.githubUrl;
+		
+		if (githubUrlChanged && githubUrl && githubUrl.trim()) {
+			fetchGitHubMetrics(githubUrl.trim())
+				.then((metrics) => {
+					if (metrics) {
+						Link.findByIdAndUpdate(link._id, {
+							githubStars: metrics.stars,
+							lastCommitDate: metrics.lastCommitDate,
+							lastCommitMessage: metrics.lastCommitMessage,
+						}).catch((err) => console.error("Failed to update GitHub metrics:", err));
+					}
+				})
+				.catch((err) => console.error("Failed to fetch GitHub metrics:", err));
 		}
 
 		res.status(200).json({

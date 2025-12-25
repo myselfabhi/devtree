@@ -9,9 +9,9 @@ export default function Home() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden">
 			{/* Animated gradient orbs */}
-			<div className="absolute top-0 left-0 w-96 h-96 bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
+			<div className="absolute top-0 left-0 w-96 h-96 bg-[var(--accent-primary)]/20 rounded-full filter blur-3xl animate-pulse" />
 			<div
-				className="absolute bottom-0 right-0 w-96 h-96 bg-purple-900/20 rounded-full filter blur-3xl animate-pulse"
+				className="absolute bottom-0 right-0 w-96 h-96 bg-green-900/20 rounded-full filter blur-3xl animate-pulse"
 				style={{ animationDelay: "1s" }}
 			/>
 
@@ -23,9 +23,9 @@ export default function Home() {
 					className="flex justify-between items-center mb-20"
 				>
 					<div className="flex items-center gap-2">
-						<Link2 className="text-[var(--accent-purple)]" size={32} />
+						<Link2 className="text-[var(--accent-primary)]" size={32} />
 						<span className="text-2xl font-semibold text-[var(--text-primary)]">
-							Linktree
+							DevTree
 						</span>
 					</div>
 					<Link href="/login">
@@ -40,12 +40,12 @@ export default function Home() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.2 }}
 					>
-						<h1 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-[var(--text-primary)] to-[var(--accent-purple)] bg-clip-text text-transparent font-bold">
-							Create Your Link Page
+						<h1 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-[var(--text-primary)] to-[var(--accent-primary)] bg-clip-text text-transparent font-bold">
+							Showcase Your Live Projects
 						</h1>
 						<p className="text-xl text-[var(--text-secondary)] mb-12 max-w-2xl mx-auto">
-							Share all your important links in one beautiful page. Perfect for
-							creators, businesses, and everyone in between.
+							Create a developer portfolio that showcases your deployed projects. Perfect for
+							recruiters to quickly evaluate your real work.
 						</p>
 					</motion.div>
 
@@ -99,7 +99,7 @@ export default function Home() {
 								className="bg-[var(--card-bg)]/50 backdrop-blur-sm border border-[var(--card-border)] rounded-xl p-8"
 							>
 								<feature.icon
-									className="text-[var(--accent-purple)] mx-auto mb-4"
+									className="text-[var(--accent-primary)] mx-auto mb-4"
 									size={40}
 								/>
 								<h3 className="mb-2 text-[var(--text-primary)] font-semibold">

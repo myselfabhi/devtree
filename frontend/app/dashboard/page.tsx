@@ -134,11 +134,11 @@ export default function DashboardPage() {
 				<ModalContent>
 					<ModalHeader>
 						<div className="flex items-center gap-3">
-							<div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center">
+							<div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-green-700 flex items-center justify-center">
 								<Sparkles className="text-white" size={24} />
 							</div>
 							<div>
-								<ModalTitle>Welcome to Linktree!</ModalTitle>
+								<ModalTitle>Welcome to DevTree!</ModalTitle>
 								<ModalDescription>
 									Let's get you started by creating your profile
 								</ModalDescription>
@@ -151,15 +151,15 @@ export default function DashboardPage() {
 						</p>
 						<ul className="space-y-2 mb-6 text-[var(--text-secondary)]">
 							<li className="flex items-center gap-2">
-								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
 								Set up your unique username
 							</li>
 							<li className="flex items-center gap-2">
-								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
 								Customize your display name and bio
 							</li>
 							<li className="flex items-center gap-2">
-								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]" />
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
 								Start sharing your links
 							</li>
 						</ul>
@@ -185,9 +185,9 @@ export default function DashboardPage() {
 			>
 				<div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
 					<div className="flex items-center gap-2">
-						<Link2 className="text-[var(--accent-purple)]" size={24} />
+						<Link2 className="text-[var(--accent-primary)]" size={24} />
 						<span className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">
-							Linktree
+							DevTree
 						</span>
 					</div>
 					<div className="flex items-center gap-2 sm:gap-4">
@@ -291,7 +291,7 @@ export default function DashboardPage() {
 							<CardContent className="p-4 sm:p-6 flex flex-col flex-1">
 								<div className="flex items-start justify-between mb-4 sm:mb-6">
 								<div className="flex items-center gap-3 sm:gap-4">
-									<div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-purple-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+									<div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-green-700 flex items-center justify-center overflow-hidden flex-shrink-0">
 										{profile?.avatar ? (
 											<img
 												src={profile.avatar}
@@ -339,7 +339,7 @@ export default function DashboardPage() {
 												<label className="text-xs sm:text-sm text-[var(--text-secondary)] block mb-1">
 													Public URL
 												</label>
-												<div className="flex items-start gap-2 text-[var(--accent-purple)]">
+												<div className="flex items-start gap-2 text-[var(--accent-primary)]">
 													<a
 														href={publicUrl}
 														target="_blank"
@@ -413,7 +413,7 @@ export default function DashboardPage() {
 													<div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
 														<ChartBar
 															size={14}
-															className="text-[var(--accent-purple)] sm:w-4 sm:h-4"
+															className="text-[var(--accent-primary)] sm:w-4 sm:h-4"
 														/>
 														<span className="text-xs sm:text-sm text-[var(--text-primary)] font-medium">
 															{link.clicks || 0}
@@ -449,7 +449,7 @@ export default function DashboardPage() {
 						className="mt-6"
 					>
 						<Link href="/dashboard/analytics">
-							<Card className="cursor-pointer hover:border-[var(--accent-purple)] transition-colors">
+							<Card className="cursor-pointer hover:border-[var(--accent-primary)] transition-colors">
 								<CardContent className="p-6">
 									<div className="flex items-center justify-between">
 										<div>
@@ -460,7 +460,7 @@ export default function DashboardPage() {
 												View detailed analytics and insights →
 											</p>
 										</div>
-										<ChartBar size={48} className="text-[var(--accent-purple)]" />
+										<ChartBar size={48} className="text-[var(--accent-primary)]" />
 									</div>
 								</CardContent>
 							</Card>

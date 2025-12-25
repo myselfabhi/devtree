@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
-/* Modern Dark Theme Color Palettes - Refined from Figma Design */
+/* DevTree - Black & Green Theme */
 :root {
-  /* Default: Purple & Dark Gray (Modern, Trendy) */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #141420;
-  --bg-tertiary: #1a1a2e;
-  --card-bg: #1f1f35;
-  --card-border: #2d2d44;
-  --input-bg: #141420;
-  --input-border: #2d2d44;
+  /* Black & Green Color Scheme */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #141414;
+  --card-bg: #1a1a1a;
+  --card-border: #2d2d2d;
+  --input-bg: #0a0a0a;
+  --input-border: #2d2d2d;
   
-  --text-primary: #f8f9fa;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
   
-  --accent-purple: #8b5cf6;
-  --accent-purple-hover: #7c3aed;
-  --accent-light: #c4b5fd;
+  --accent-primary: #22c55e;
+  --accent-hover: #16a34a;
+  --accent-light: #4ade80;
+  --accent-purple: #22c55e;
+  --accent-purple-hover: #16a34a;
   
-  --success: #10b981;
+  --success: #22c55e;
   --error: #ef4444;
   --warning: #f59e0b;
   
-  --shadow: rgba(0, 0, 0, 0.3);
-  --shadow-lg: rgba(0, 0, 0, 0.5);
+  --shadow: rgba(0, 0, 0, 0.5);
+  --shadow-lg: rgba(0, 0, 0, 0.7);
   
   /* Legacy support */
   --bg-card: var(--card-bg);
-  --bg-hover: #252542;
-  --accent-primary: var(--accent-purple);
-  --accent-hover: var(--accent-purple-hover);
+  --bg-hover: #252525;
   --border-color: var(--card-border);
-  --border-hover: #3d3d5c;
+  --border-hover: #3d3d3d;
 }
 
 /* Alternative Palette 1: Emerald & Charcoal */

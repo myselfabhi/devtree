@@ -13,6 +13,14 @@ export interface ILink extends Document {
 	status?: "live" | "down" | "slow" | "unknown";
 	lastCheckedAt?: Date;
 	screenshotUrl?: string;
+	githubStars?: number;
+	lastCommitDate?: Date;
+	lastCommitMessage?: string;
+	lighthousePerformance?: number;
+	lighthouseAccessibility?: number;
+	lighthouseBestPractices?: number;
+	lighthouseSEO?: number;
+	lighthouseLastRun?: Date;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -71,6 +79,30 @@ const LinkSchema: Schema = new Schema(
 		screenshotUrl: {
 			type: String,
 			trim: true,
+		},
+		githubStars: {
+			type: Number,
+		},
+		lastCommitDate: {
+			type: Date,
+		},
+		lastCommitMessage: {
+			type: String,
+		},
+		lighthousePerformance: {
+			type: Number,
+		},
+		lighthouseAccessibility: {
+			type: Number,
+		},
+		lighthouseBestPractices: {
+			type: Number,
+		},
+		lighthouseSEO: {
+			type: Number,
+		},
+		lighthouseLastRun: {
+			type: Date,
 		},
 	},
 	{

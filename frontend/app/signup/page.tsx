@@ -75,7 +75,7 @@ export default function SignupPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden flex items-center justify-center px-4 py-6 sm:py-8">
 			{/* Animated background orbs - matching Figma design */}
-			<div className="absolute top-20 left-20 w-96 h-96 bg-[var(--accent-purple)]/20 rounded-full filter blur-3xl animate-pulse" />
+			<div className="absolute top-20 left-20 w-96 h-96 bg-[var(--accent-primary)]/20 rounded-full filter blur-3xl animate-pulse" />
 			<div
 				className="absolute bottom-20 right-20 w-96 h-96 bg-purple-900/20 rounded-full filter blur-3xl animate-pulse"
 				style={{ animationDelay: "1.5s" }}
@@ -89,9 +89,9 @@ export default function SignupPage() {
 					className="text-center mb-8"
 				>
 					<div className="flex items-center justify-center gap-2 mb-2">
-						<Link2 className="text-[var(--accent-purple)]" size={28} />
+						<Link2 className="text-[var(--accent-primary)]" size={28} />
 						<span className="text-xl sm:text-2xl font-semibold text-[var(--text-primary)]">
-							Linktree
+							DevTree
 						</span>
 					</div>
 					<p className="text-[var(--text-secondary)]">Create your account</p>
@@ -181,7 +181,7 @@ export default function SignupPage() {
 							<div className="mt-6 text-center">
 								<Link
 									href="/login"
-									className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors text-sm"
+									className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors text-sm"
 								>
 									Already have an account? Sign in
 								</Link>
@@ -198,7 +198,7 @@ export default function SignupPage() {
 				>
 					<Link
 						href="/"
-						className="text-[var(--text-secondary)] hover:text-[var(--accent-purple)] transition-colors text-sm"
+						className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors text-sm"
 					>
 						← Back to home
 					</Link>

@@ -276,14 +276,10 @@ export default function PublicProfilePage() {
 					{links.map((link, index) => (
 						<ProjectCard
 							key={link._id}
+							projectId={link._id}
+							username={username}
 							title={link.title}
 							description={link.description}
-							techStack={link.techStack}
-							role={link.role}
-							githubUrl={link.githubUrl}
-							url={link.url}
-							screenshotUrl={link.screenshotUrl}
-							onClick={() => handleLinkClick(link._id)}
 							index={index}
 						/>
 					))}
