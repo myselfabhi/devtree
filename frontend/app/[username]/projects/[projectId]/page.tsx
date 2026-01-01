@@ -211,7 +211,7 @@ export default function ProjectDetailPage() {
 						onClick={() => router.push(`/${username}`)}
 						className="mt-4 px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors"
 					>
-						Back to Profile
+					    Profile
 					</button>
 				</div>
 			</div>

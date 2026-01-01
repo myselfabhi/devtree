@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import { profileApi, linkApi } from "@/lib/api";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ProjectCard } from "@/components/ui/project-card";
@@ -282,6 +284,24 @@ export default function PublicProfilePage() {
 				transition={{ duration: 0.3 }}
 				className="relative z-10 container mx-auto px-4 sm:px-6 py-4 sm:py-6 md:py-12 max-w-2xl"
 			>
+				{/* Back to Landing Page - Only for example profile */}
+				{username.toLowerCase() === "example" && (
+					<motion.div
+						initial={{ opacity: 0, x: -20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ delay: 0.1 }}
+						className="mb-6"
+					>
+						<Link
+							href="/"
+							className="inline-flex items-center gap-2 text-sm sm:text-base text-[var(--text-primary)] hover:text-[var(--accent-primary)] transition-colors"
+						>
+							<ArrowLeft size={18} />
+							<span>Landing Page</span>
+						</Link>
+					</motion.div>
+				)}
+
 				{/* Profile Header */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}

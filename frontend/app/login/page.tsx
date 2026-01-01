@@ -175,7 +175,7 @@ export default function LoginPage() {
 						href="/"
 						className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors text-sm"
 					>
-						← Back to home
+						← home
 					</Link>
 				</motion.div>
 			</div>
