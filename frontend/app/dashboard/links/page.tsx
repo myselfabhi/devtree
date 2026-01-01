@@ -322,22 +322,22 @@ export default function LinksPage() {
 			
 			if (editingLink) {
 				await linkApi.update(editingLink._id, apiData, token);
-				setIsModalOpen(false);
+			setIsModalOpen(false);
 				setTechStackInput("");
-				reset();
-				loadLinks();
+			reset();
+			loadLinks();
 			}
 		} catch (err: any) {
 			setError(err.message || "Failed to save link");
 		}
 	};
-	
+
 	const handleFetchGitHub = async () => {
 		if (!githubUrlInput.trim()) {
 			setError("Please enter a GitHub URL");
 			return;
 		}
-		
+
 		setIsFetchingGitHub(true);
 		setError("");
 		

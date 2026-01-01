@@ -65,7 +65,70 @@ export default function PublicProfilePage() {
 		}
 	}, [username]);
 
+	// Hardcoded example data
+	const EXAMPLE_PROFILE: Profile = {
+		id: "example-profile-id",
+		username: "example",
+		displayName: "Abhinav",
+		bio: "wanna be tech guy",
+	};
+
+	const EXAMPLE_LINKS: Link[] = [
+		{
+			_id: "example-link-1",
+			title: "E-Commerce Platform",
+			url: "https://example-store.com",
+			description: "Full-stack e-commerce platform with real-time inventory management, payment integration, and admin dashboard. Built with modern web technologies.",
+			techStack: ["Next.js", "React", "TypeScript", "MongoDB", "Stripe"],
+			role: "Full Stack",
+			githubUrl: "https://github.com/myselfabhi/ecommerce-platform",
+			screenshotUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1280&h=720&fit=crop",
+			order: 0,
+		},
+		{
+			_id: "example-link-2",
+			title: "Task Management API",
+			url: "https://api.taskmanager.dev",
+			description: "RESTful API for task management with authentication, authorization, and real-time updates. Supports multiple projects and team collaboration.",
+			techStack: ["Go", "Gin", "PostgreSQL", "Redis", "Docker"],
+			role: "Backend",
+			githubUrl: "https://github.com/myselfabhi/task-api",
+			screenshotUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1280&h=720&fit=crop",
+			order: 1,
+		},
+		{
+			_id: "example-link-3",
+			title: "Portfolio Website",
+			url: "https://myportfolio.vercel.app",
+			description: "Personal portfolio website showcasing my projects and skills. Built with modern design principles and fully responsive.",
+			techStack: ["React", "Tailwind CSS", "Framer Motion", "Vite"],
+			role: "Frontend",
+			githubUrl: "https://github.com/myselfabhi/portfolio",
+			screenshotUrl: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1280&h=720&fit=crop",
+			order: 2,
+		},
+		{
+			_id: "example-link-4",
+			title: "Machine Learning Pipeline",
+			url: "https://ml-pipeline.streamlit.app",
+			description: "End-to-end ML pipeline for data preprocessing, model training, and deployment. Includes automated hyperparameter tuning and model versioning.",
+			techStack: ["Python", "FastAPI", "Streamlit", "Scikit-learn", "TensorFlow"],
+			role: "Backend",
+			githubUrl: "https://github.com/myselfabhi/ml-pipeline",
+			screenshotUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1280&h=720&fit=crop",
+			order: 3,
+		},
+	];
+
 	const loadProfile = async () => {
+		// Use hardcoded data for example profile
+		if (username.toLowerCase() === "example") {
+			setProfile(EXAMPLE_PROFILE);
+			setLinks(EXAMPLE_LINKS);
+			setIsLoading(false);
+			return;
+		}
+
 		try {
 			const [profileRes, linksRes] = await Promise.all([
 				profileApi.getPublic(username),
@@ -82,9 +145,12 @@ export default function PublicProfilePage() {
 				}
 
 				// Track profile view (fire and forget - don't wait for it)
-				profileApi.trackView(username).catch(err => {
-					console.error("Failed to track profile view:", err);
-				});
+				// Skip tracking for example profile
+				if (username.toLowerCase() !== "example") {
+					profileApi.trackView(username).catch(err => {
+						console.error("Failed to track profile view:", err);
+					});
+				}
 			}
 
 			if (linksRes.success) {
@@ -98,6 +164,11 @@ export default function PublicProfilePage() {
 	};
 
 	const handleLinkClick = async (linkId: string) => {
+		// Skip tracking for example profile
+		if (username.toLowerCase() === "example") {
+			return;
+		}
+
 		try {
 			await linkApi.track(linkId);
 		} catch (err) {

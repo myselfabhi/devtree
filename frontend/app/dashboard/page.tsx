@@ -184,12 +184,12 @@ export default function DashboardPage() {
 				className="bg-[var(--card-bg)]/80 backdrop-blur-xl border-b border-[var(--card-border)] sticky top-0 z-50"
 			>
 				<div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
-					<div className="flex items-center gap-2">
+					<Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
 						<Link2 className="text-[var(--accent-primary)]" size={24} />
 						<span className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">
 							DevTree
 						</span>
-					</div>
+					</Link>
 					<div className="flex items-center gap-2 sm:gap-4">
 						{profile && (
 							<Link href={`/${profile.username}`} target="_blank">

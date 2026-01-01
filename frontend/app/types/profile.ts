@@ -1,7 +1,7 @@
 export type Link = {
     title: string;
     url?: string;
-};
+  };
   
   export type Profile = {
     name: string;

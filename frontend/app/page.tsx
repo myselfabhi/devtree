@@ -1,11 +1,48 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Link2, Sparkles, ChartBar, Palette } from "lucide-react";
+import { Link2, Sparkles, ChartBar, Palette, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { profileApi } from "@/lib/api";
 
 export default function Home() {
+	const { data: session, status } = useSession();
+	const router = useRouter();
+	const [profile, setProfile] = useState<any>(null);
+	const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+
+	useEffect(() => {
+		if (status === "authenticated" && session?.accessToken) {
+			loadProfile();
+		} else {
+			setIsLoadingProfile(false);
+		}
+	}, [status, session]);
+
+	const loadProfile = async () => {
+		try {
+			const response = await profileApi.get(session!.accessToken as string);
+			if (response.success && response.data.profile) {
+				setProfile(response.data.profile);
+			}
+		} catch (err) {
+			console.error("Failed to load profile:", err);
+		} finally {
+			setIsLoadingProfile(false);
+		}
+	};
+
+	const handleLogout = async () => {
+		const { signOut } = await import("next-auth/react");
+		await signOut({ redirect: false });
+		router.push("/");
+		router.refresh();
+	};
+
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-tertiary)] relative overflow-hidden">
 			{/* Animated gradient orbs */}
@@ -22,15 +59,43 @@ export default function Home() {
 					animate={{ opacity: 1, y: 0 }}
 					className="flex justify-between items-center mb-12 sm:mb-16 md:mb-20 px-4"
 				>
-					<div className="flex items-center gap-2">
+					<Link href="/" className="flex items-center gap-2">
 						<Link2 className="text-[var(--accent-primary)]" size={28} />
 						<span className="text-xl sm:text-2xl font-semibold text-[var(--text-primary)]">
 							DevTree
 						</span>
-					</div>
-					<Link href="/login">
-						<Button variant="outline" className="text-sm sm:text-base">Sign In</Button>
 					</Link>
+					<div className="flex items-center gap-2 sm:gap-3">
+						{status === "loading" || isLoadingProfile ? (
+							<div className="w-20 h-9 bg-[var(--bg-secondary)] rounded-lg animate-pulse" />
+						) : session && profile ? (
+							<>
+								<Link href={`/${profile.username}`} target="_blank">
+									<Button variant="outline" className="flex items-center gap-2 text-sm sm:text-base">
+										<User size={16} />
+										<span className="hidden sm:inline">@{profile.username}</span>
+										<span className="sm:hidden">{profile.displayName?.split(" ")[0] || profile.username}</span>
+									</Button>
+								</Link>
+								<Link href="/dashboard">
+									<Button className="text-sm sm:text-base">Dashboard</Button>
+								</Link>
+							</>
+						) : session && !profile ? (
+							<>
+								<Link href="/dashboard/profile">
+									<Button variant="outline" className="text-sm sm:text-base">Setup Profile</Button>
+								</Link>
+								<Link href="/dashboard">
+									<Button className="text-sm sm:text-base">Dashboard</Button>
+								</Link>
+							</>
+						) : (
+							<Link href="/login">
+								<Button variant="outline" className="text-sm sm:text-base">Sign In</Button>
+							</Link>
+						)}
+					</div>
 				</motion.header>
 
 				{/* Hero Section */}
@@ -58,9 +123,9 @@ export default function Home() {
 						<Link href="/signup">
 							<Button>Get Started Free</Button>
 						</Link>
-						<Link href="/login">
-							<Button variant="outline">View Example</Button>
-						</Link>
+					<Link href="/example">
+						<Button variant="outline">View Example</Button>
+					</Link>
 					</motion.div>
 
 					{/* Features Grid */}

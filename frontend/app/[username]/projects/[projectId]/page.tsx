@@ -52,7 +52,103 @@ export default function ProjectDetailPage() {
 		}
 	}, [username, projectId]);
 
+	// Hardcoded example data
+	const EXAMPLE_PROFILE: Profile = {
+		id: "example-profile-id",
+		username: "example",
+		displayName: "Abhinav",
+		bio: "wanna be tech guy",
+	};
+
+	const EXAMPLE_PROJECTS: Project[] = [
+		{
+			_id: "example-link-1",
+			title: "E-Commerce Platform",
+			url: "https://example-store.com",
+			description: "Full-stack e-commerce platform with real-time inventory management, payment integration, and admin dashboard. Built with modern web technologies.",
+			techStack: ["Next.js", "React", "TypeScript", "MongoDB", "Stripe"],
+			role: "Full Stack",
+			githubUrl: "https://github.com/myselfabhi/ecommerce-platform",
+			screenshotUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1280&h=720&fit=crop",
+			lighthousePerformance: 92,
+			lighthouseAccessibility: 98,
+			lighthouseBestPractices: 95,
+			lighthouseSEO: 88,
+			lighthouseLastRun: new Date().toISOString(),
+			githubStars: 247,
+			lastCommitDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+			lastCommitMessage: "feat: Add real-time notifications for order updates",
+		},
+		{
+			_id: "example-link-2",
+			title: "Task Management API",
+			url: "https://api.taskmanager.dev",
+			description: "RESTful API for task management with authentication, authorization, and real-time updates. Supports multiple projects and team collaboration.",
+			techStack: ["Go", "Gin", "PostgreSQL", "Redis", "Docker"],
+			role: "Backend",
+			githubUrl: "https://github.com/myselfabhi/task-api",
+			screenshotUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1280&h=720&fit=crop",
+			lighthousePerformance: 87,
+			lighthouseAccessibility: 94,
+			lighthouseBestPractices: 92,
+			lighthouseSEO: 91,
+			lighthouseLastRun: new Date().toISOString(),
+			githubStars: 183,
+			lastCommitDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+			lastCommitMessage: "fix: Resolve race condition in concurrent task updates",
+		},
+		{
+			_id: "example-link-3",
+			title: "Portfolio Website",
+			url: "https://myportfolio.vercel.app",
+			description: "Personal portfolio website showcasing my projects and skills. Built with modern design principles and fully responsive.",
+			techStack: ["React", "Tailwind CSS", "Framer Motion", "Vite"],
+			role: "Frontend",
+			githubUrl: "https://github.com/myselfabhi/portfolio",
+			screenshotUrl: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1280&h=720&fit=crop",
+			lighthousePerformance: 96,
+			lighthouseAccessibility: 100,
+			lighthouseBestPractices: 100,
+			lighthouseSEO: 95,
+			lighthouseLastRun: new Date().toISOString(),
+			githubStars: 56,
+			lastCommitDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+			lastCommitMessage: "style: Improve mobile navigation UX",
+		},
+		{
+			_id: "example-link-4",
+			title: "Machine Learning Pipeline",
+			url: "https://ml-pipeline.streamlit.app",
+			description: "End-to-end ML pipeline for data preprocessing, model training, and deployment. Includes automated hyperparameter tuning and model versioning.",
+			techStack: ["Python", "FastAPI", "Streamlit", "Scikit-learn", "TensorFlow"],
+			role: "Backend",
+			githubUrl: "https://github.com/myselfabhi/ml-pipeline",
+			screenshotUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1280&h=720&fit=crop",
+			lighthousePerformance: 78,
+			lighthouseAccessibility: 89,
+			lighthouseBestPractices: 85,
+			lighthouseSEO: 82,
+			lighthouseLastRun: new Date().toISOString(),
+			githubStars: 312,
+			lastCommitDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+			lastCommitMessage: "feat: Add support for custom model architectures",
+		},
+	];
+
 	const loadData = async () => {
+		// Use hardcoded data for example profile
+		if (username.toLowerCase() === "example") {
+			const projectData = EXAMPLE_PROJECTS.find(p => p._id === projectId);
+			if (projectData) {
+				setProfile(EXAMPLE_PROFILE);
+				setProject(projectData);
+			} else {
+				setError("Project not found");
+			}
+			setIsLoading(false);
+			return;
+		}
+
 		try {
 			const [profileRes, linksRes] = await Promise.all([
 				profileApi.getPublic(username),
@@ -83,6 +179,11 @@ export default function ProjectDetailPage() {
 
 	const handleLinkClick = async () => {
 		if (!project?.url) return;
+
+		// Skip tracking for example profile
+		if (username.toLowerCase() === "example") {
+			return;
+		}
 
 		try {
 			await linkApi.track(project._id);
