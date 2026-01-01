@@ -157,13 +157,25 @@ function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
 	}
 }
 
+const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
+
+function getGitHubHeaders(): Record<string, string> {
+	const headers: Record<string, string> = {
+		Accept: "application/vnd.github.v3+json",
+	};
+	
+	if (GITHUB_API_TOKEN) {
+		headers.Authorization = `token ${GITHUB_API_TOKEN}`;
+	}
+	
+	return headers;
+}
+
 async function fetchRepoInfo(owner: string, repo: string): Promise<GitHubRepoInfo> {
 	const url = `https://api.github.com/repos/${owner}/${repo}`;
 	
 	const response = await fetch(url, {
-		headers: {
-			Accept: "application/vnd.github.v3+json",
-		},
+		headers: getGitHubHeaders(),
 	});
 	
 	if (!response.ok) {
@@ -171,7 +183,12 @@ async function fetchRepoInfo(owner: string, repo: string): Promise<GitHubRepoInf
 			throw new Error("Repository not found");
 		}
 		if (response.status === 403) {
-			throw new Error("Rate limit exceeded or repository is private");
+			// Check rate limit headers
+			const remaining = response.headers.get("x-ratelimit-remaining");
+			if (remaining === "0") {
+				throw new Error("GitHub API rate limit exceeded. Please add GITHUB_API_TOKEN to your environment variables for higher limits.");
+			}
+			throw new Error("Repository is private or access denied");
 		}
 		throw new Error(`GitHub API error: ${response.statusText}`);
 	}
@@ -187,10 +204,7 @@ async function fetchPackageJson(
 		const url = `https://api.github.com/repos/${owner}/${repo}/contents/package.json`;
 		
 		const response = await fetch(url, {
-			headers: {
-				Accept: "application/vnd.github.v3+json",
-				// Optional: Add GitHub token
-			},
+			headers: getGitHubHeaders(),
 		});
 		
 		if (!response.ok) {
@@ -221,9 +235,7 @@ async function fetchRequirementsTxt(
 		const url = `https://api.github.com/repos/${owner}/${repo}/contents/requirements.txt`;
 		
 		const response = await fetch(url, {
-			headers: {
-				Accept: "application/vnd.github.v3+json",
-			},
+			headers: getGitHubHeaders(),
 		});
 		
 		if (!response.ok) {
