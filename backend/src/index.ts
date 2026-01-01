@@ -32,7 +32,12 @@ app.get("/api", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 // GitHub routes
-app.use("/api/github", githubRoutes);
+if (githubRoutes) {
+	app.use("/api/github", githubRoutes);
+	console.log("✅ GitHub routes registered at /api/github");
+} else {
+	console.error("❌ GitHub routes module is undefined");
+}
 
 // Profile routes
 app.use("/api/profile", profileRoutes);
