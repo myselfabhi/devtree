@@ -118,7 +118,7 @@ export default function Home() {
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.4 }}
-						className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
+						className="flex flex-col sm:flex-row gap-4 justify-center mb-6"
 					>
 						<Link href="/signup">
 							<Button>Get Started Free</Button>
@@ -127,6 +127,16 @@ export default function Home() {
 						<Button variant="outline">View Example</Button>
 					</Link>
 					</motion.div>
+
+					{/* Disclaimer */}
+					<motion.p
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.5 }}
+						className="text-xs sm:text-sm text-[var(--text-muted)] mb-20 max-w-2xl mx-auto px-4"
+					>
+						<strong className="text-[var(--text-secondary)]">Note:</strong> As of now, the backend is deployed on Render. Please have patience as the backend may be waking up for DevTree.
+					</motion.p>
 
 					{/* Features Grid */}
 					<motion.div
