@@ -13,6 +13,4 @@ jobs:
       - name: Ping Render health endpoint
         run: |
           cd backend
-          npm install
-          npx webpack
           curl -s https://linktree-ow7x.onrender.com/health
