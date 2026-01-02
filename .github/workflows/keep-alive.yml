@@ -3,7 +3,7 @@ name: Keep Render Backend Alive
 on:
   schedule:
     - cron: "*/10 * * * *"   # every 10 minutes
-  workflow_dispatch:        # manual trigger (optional)
+  workflow_dispatch:
 
 jobs:
   ping:
@@ -12,5 +12,4 @@ jobs:
     steps:
       - name: Ping Render health endpoint
         run: |
-          cd /backend
           curl -s https://linktree-ow7x.onrender.com/health
