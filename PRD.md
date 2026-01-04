@@ -3,7 +3,7 @@
 
 **Version:** 1.0  
 **Date:** 2024  
-**Status:** Planning Phase
+**Status:** Planning Phase.
 
 ---
 
