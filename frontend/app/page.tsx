@@ -124,8 +124,8 @@ export default function Home() {
 							<Button>Get Started Free</Button>
 						</Link>
 					<Link href="/example">
-						<Button variant="outline">View Example</Button>
-					</Link>
+							<Button variant="outline">View Example</Button>
+						</Link>
 					</motion.div>
 
 					{/* Disclaimer */}
